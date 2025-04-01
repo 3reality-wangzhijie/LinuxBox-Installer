@@ -12,6 +12,9 @@ File List:
 - python_3.13.deb
 - hacore_2025.3.4.deb
 
+Install steps:<br>
+hacore-config_2025.3.4.deb -> python_3.13.deb -> hacore_2025.3.4.deb
+
 ## Others
 To to continue ...
 
