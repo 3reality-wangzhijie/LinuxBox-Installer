@@ -1,17 +1,28 @@
 {
   "channel": "stable",
-  "supervisor": "2025.04.0",
   "homeassistant": {
-    "version":"2025.4.2",
-    "python":"3.13",
-    "hacore":"2025.4.2",
-    "hacore-config":"2025.4.2"
+    "version": "2025.4.3",
+    "python": {
+      "version": "3.13",
+      "release": "2025.4.3"
+    },
+    "hacore": {
+      "version": "2025.4.3",
+      "release": "2025.4.3"
+    },
+    "hacore-config": {
+      "version": "2025.4.2",
+      "release": "2025.4.2"
+    },
+    "otbr-agent": {
+      "version": "2025.04.22",
+      "release": "2025.4.3"
+    }
   },
   "zigbee2mqtt": {
-    "version":"2025.4.0"
+    "version": "2025.4.0"
   },
-  "HomeKitBridge":{
-    "version":"2025.4.0"
+  "HomeKitBridge": {
+    "version": "2025.4.0"
   }
 }
-
