@@ -6,6 +6,13 @@ Quick installer for HomeAssistant, zigbee2mqtt, Homekit bridge etc
 
 Official Document: https://www.home-assistant.io/installation/linux#install-home-assistant-core
 
+### version 2025.4.3
+File List:
+- hacore-config_2025.4.3.deb 
+- python_3.13.deb(3.13.3) [Download](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.4.3/python3_3.13.3.deb)
+- hacore_2025.4.3.deb
+
+
 ### version 2025.4.2
 File List:
 - hacore-config_2025.4.2.deb
