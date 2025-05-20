@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+# 检查是安装还是升级
+if [ "$1" = "configure" ]; then
+	echo "Install python3.13 ThirdReality"
+fi
+
+exit 0
+
