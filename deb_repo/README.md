@@ -1,31 +1,38 @@
-# 本人工作专用
+# Work Documentation
 
-定期更新
+**Regular Updates**
 
-主要工作思路：
+### Main Workflow:
 
-1、创建实际工作目录和文件
-2、复制文件
-3、创建deb
+1. Create actual work directories and files.
+2. Copy files.
+3. Create a `.deb` package.
 
-工作目录允许用户修改或者重建，例如/lib/systemd/system/hubv3.service
+Users are allowed to modify or rebuild the work directory, e.g., `/lib/systemd/system/hubv3.service`.
 
+---
 
-# 清除全部工作痕迹
+### Commands
+
+**Clear All Work Traces**
+```shell
 ./build.sh --clean
+```
 
-用户创建不同的deb时，互不干扰
+- When users create different `.deb` packages, they don't interfere with each other.
 
-# 重建
+**Rebuild**
+```shell
 ./build.sh --rebuild
+```
 
-删除工作目录内的数据，重建，一般用户数据全乱了
+- Deletes data within the work directory and rebuilds it. This is useful when user data becomes disorganized.
 
-rebuild时，本目录内的部分文件，复制到工作目录
+- During rebuild, some files from the current directory are copied to the work directory.
 
+**Compile `.deb` Package**
+```shell
 ./build.sh
+```
 
-编译deb，
-
-一般如果工作目录内的文件，如果已经存在的话，不会用本目录内的文件覆盖， 便于编辑，直到rebuild指令
-
+- If files already exist within the work directory, they will generally not be overwritten by files from the current directory. This facilitates editing until the rebuild command is issued.

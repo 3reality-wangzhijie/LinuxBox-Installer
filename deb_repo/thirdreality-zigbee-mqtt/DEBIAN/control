@@ -1,0 +1,7 @@
+Package: thirdreality-zigbee-mqtt
+Version: 2025.05.21
+Section: utils
+Priority: optional
+Architecture: arm64
+Maintainer: Your Name <guoping.liu@3reality.com>
+Description: A custom zigbee2mqtt package.
