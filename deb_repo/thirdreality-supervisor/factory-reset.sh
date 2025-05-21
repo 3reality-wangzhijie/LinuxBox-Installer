@@ -76,7 +76,7 @@ remove_homeassistant_core()
     /usr/bin/systemctl disable matter-server || true
     /usr/bin/systemctl disable matter-server || true
 
-    dpkg --configure -a
+    dpkg --configure -a || true
 
     apt purge -y thirdreality-hacore || true
     apt purge -y thirdreality-hacore-config  || true

@@ -80,12 +80,16 @@ chmod +x "${output_dir}/usr/local/bin/supervisor"
 
 cp "${supervised_dir}/supervisor.service" "${output_dir}/etc/systemd/system/"
 
-cp "${current_dir}/factory-reset.sh" "${output_dir}/lib/armbian/"
-chmod +x "${output_dir}/lib/armbian/factory-reset.sh"
+if [ -f "${current_dir}/factory-reset.sh" ]; then
+    cp "${current_dir}/factory-reset.sh" "${output_dir}/lib/armbian/"
+    chmod +x "${output_dir}/lib/armbian/factory-reset.sh"
+fi
 
-# rename the file to avoid conflict
-cp "${current_dir}/hubv3-usb-sync.sh" "${output_dir}/lib/thirdreality/hubv3-usb-sync-latest.sh"
-chmod +x "${output_dir}/lib/thirdreality/hubv3-usb-sync-latest.sh"
+if [ -f "${current_dir}/hubv3-usb-sync.sh" ]; then
+    # rename the file to avoid conflict
+    cp "${current_dir}/hubv3-usb-sync.sh" "${output_dir}/lib/thirdreality/hubv3-usb-sync-latest.sh"
+    chmod +x "${output_dir}/lib/thirdreality/hubv3-usb-sync-latest.sh"
+fi
 
 print_info "Start to build linuxbox-supervisor_${version}.deb ..."
 dpkg-deb --build ${output_dir} ${current_dir}/linuxbox-supervisor_${version}.deb

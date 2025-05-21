@@ -6,6 +6,7 @@ if [ "$1" = "remove" ]; then
     if [[ "$(/usr/bin/systemctl is-active supervisor.service)" == "active" ]]; then
         echo "Stopping supervisor.service"
         /usr/bin/systemctl stop supervisor.service
+        /usr/bin/systemctl disable supervisor.service
     fi
     echo "Remove success."
 fi

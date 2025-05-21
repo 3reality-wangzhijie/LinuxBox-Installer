@@ -121,8 +121,8 @@ if [ ! -d "${current_dir}/ot-br-posix" ]; then
     fi
 
     # OTBR_VENDOR_NAME="Home Assistant" OTBR_PRODUCT_NAME="OpenThread Border Router"
-    cd "${current_dir}/ot-br-posix"; WEB_GUI=0 ./script/bootstrap
-    cd "${current_dir}/ot-br-posix"; INFRA_IF_NAME=wlan0 WEB_GUI=0 ./script/setup
+    cd "${current_dir}/ot-br-posix"; WEB_GUI=1 ./script/bootstrap
+    cd "${current_dir}/ot-br-posix"; INFRA_IF_NAME=wlan0 WEB_GUI=1 ./script/setup
 
     cp ${current_dir}/otbr-agent /etc/default/
 
@@ -142,6 +142,8 @@ cd ${current_dir}
 
 cp ${current_dir}/otbr-agent /etc/default/otbr-agent
 
+mkdir -p /lib/thirdreality/
+mkdir -p /lib/systemd/system/
 cp ${current_dir}/hubv3-otbr-agent.sh /lib/thirdreality/hubv3-otbr-agent.sh
 cp ${current_dir}/otbr_database /lib/thirdreality/otbr_database
 
@@ -162,6 +164,7 @@ mkdir -p ${output_dir}/usr/bin/
 mkdir -p ${output_dir}/usr/lib/systemd/system/
 mkdir -p ${output_dir}/usr/lib/thirdreality/
 mkdir -p ${output_dir}/usr/include/
+mkdir -p ${output_dir}/usr/share
 
 if [ -f "/usr/lib/libdns_sd.so.1" ];then 
     cp /usr/lib/libdns_sd.so.1 ${output_dir}/usr/lib/
@@ -178,6 +181,10 @@ chmod +x ${output_dir}/usr/lib/thirdreality/otbr_database
 
 cp /usr/lib/systemd/system/otbr-agent.service ${output_dir}/usr/lib/systemd/system/
 cp /usr/lib/systemd/system/hubv3-otbr-agent.service ${output_dir}/usr/lib/systemd/system/
+
+if [ -d "/usr/share/otbr-web" ];then
+    cp /usr/share/otbr-web ${output_dir}/usr/share/otbr-web
+fi
 
 if [ -f "/usr/lib/libnss_mdns-0.2.so" ];then 
     cp /usr/lib/libnss_mdns-0.2.so ${output_dir}/usr/lib/

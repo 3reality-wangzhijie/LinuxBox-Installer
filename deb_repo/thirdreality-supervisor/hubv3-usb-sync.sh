@@ -28,7 +28,7 @@ on_exit() {
     # Custom actions before the script exits
     echo "Running cleanup tasks..."
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor led mqtt_pared
+        /usr/local/bin/supervisor led mqtt_pared  || true
     fi
 
     if [ "$exit_code" -ne 0 ]; then
@@ -69,14 +69,17 @@ exclude_patterns=(
     "hassio-config"
     "os-agent"
     "homeassistant-supervised"
+
     "hacore-config_"
     "python3_"
     "hacore_"
     "otbr-agent_"
+
+    "linuxbox-supervisor_"
 )
 
 install_extra_debs() {
-    echo "Finding and installing normal deb packages..."
+    echo "[POST]Finding and installing normal deb packages..."
 
     deb_files=$(find "$WORK_DIR" -maxdepth 1 -name "*.deb" -type f)
 
@@ -90,13 +93,13 @@ install_extra_debs() {
         for pattern in "${exclude_patterns[@]}"; do
             if [[ "$deb_file" == *"$pattern"* ]]; then
                 exclude=true
-                echo "Skipping excluded file: $deb_file"
+                echo "[POST]Skipping excluded file: $deb_file"
                 break
             fi
         done
 
         if [ "$exclude" = false ]; then
-            echo "Installing: $deb_file"
+            echo "[POST]Installing: $deb_file"
             sudo dpkg -i "$deb_file"
             installed=0
         fi
@@ -105,7 +108,7 @@ install_extra_debs() {
     if [ "$installed" -eq 0 ]; then
         # Attempt to fix any potential broken dependencies
         echo "Attempting to fix broken dependencies..."
-        sudo apt-get install -f -y
+        apt-get install -f -y || true
     fi
 }
 
@@ -144,6 +147,14 @@ dpkg_install() {
 
 install_supervisor_debs() {
     echo "Try to installing supervisor debs..."
+
+    # 安装 linux supervisor
+    supervisor_deb_file=$(find "$WORK_DIR" -maxdepth 1 -name "linuxbox-supervisor_*.deb" -type f | head -n 1)
+    if [ -n "$supervisor_deb_file" ]; then
+        install_deb_if_needed "$supervisor_deb_file" "linuxbox-supervisor"
+    else
+        echo "Warning: No linuxbox supervisor deb file found in $WORK_DIR" >&2
+    fi
 }
 
 # main procedure - 2
@@ -198,7 +209,7 @@ install_core_matter_debs() {
     fi
 
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor ota update
+        /usr/local/bin/supervisor ota update  || true
     fi
 }
 
@@ -210,7 +221,7 @@ install_all_deb_images() {
 
     # LED indication (continue on error)
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor led mqtt_paring
+        /usr/local/bin/supervisor led mqtt_paring  || true
     fi
 
     # Process .deb files
@@ -263,7 +274,7 @@ install_all_deb_images() {
 
     # Final LED indication (always attempt)
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor led mqtt_pared
+        /usr/local/bin/supervisor led mqtt_pared  || true
     fi
 
     return $overall_status
@@ -274,26 +285,31 @@ main_procedure()
     install_supervisor_debs
 
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor led mqtt_paring
+        /usr/local/bin/supervisor led mqtt_paring  || true
     fi
 
+    # install home-assistant-core
     is_home_assistant_running=$(systemctl is-active --quiet home-assistant.service && echo "yes" || echo "no")
-
     hacore_config_deb_file=$(find "$WORK_DIR" -maxdepth 1 -name "hacore-config_*.deb" -type f | head -n 1)
     hacore_deb_file=$(find "$WORK_DIR" -maxdepth 1 -name "hacore_*.deb" -type f | head -n 1)
     otbr_deb_file=$(find "$WORK_DIR" -maxdepth 1 -name "otbr-agent_*.deb" -type f | head -n 1)
 
-    if [[ -n "$is_home_assistant_running" == "yes" || "$hacore_config_deb_file" || -n "$hacore_deb_file" || -n "$otbr_deb_file" ]]; then
+    if [[ "$is_home_assistant_running" == "yes" || -n "$hacore_config_deb_file" || -n "$hacore_deb_file" || -n "$otbr_deb_file" ]]; then
         install_core_matter_debs
     else
         echo "TODO: install_all_deb_images"
         # install_all_deb_images
     fi
 
+    # install zigbee2mqtt
+
+    # install HomeBridge
+
+
     install_extra_debs
 
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor led mqtt_pared
+        /usr/local/bin/supervisor led mqtt_pared || true
     fi
 }
 

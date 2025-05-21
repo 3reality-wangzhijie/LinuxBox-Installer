@@ -1,8 +1,31 @@
 #!/bin/bash
 set -e
+function info { echo -e "\e[32m[info] $*\e[39m"; }
+function warn  { echo -e "\e[33m[warn] $*\e[39m"; }
+function error { echo -e "\e[31m[error] $*\e[39m"; exit 1; }
 
-/usr/bin/systemctl daemon-reload
-/usr/bin/systemctl start supervisor.service
+# 检查是安装还是升级
+if [ "$1" = "configure" ]; then
+
+	if [ -f "/lib/armbian/factory-reset.sh" ]; then
+		chmod +x /lib/armbian/factory-reset.sh > /dev/null 2>&1
+	fi
+
+	if [ -f "/lib/thirdreality/hubv3-usb-sync-latest.sh" ]; then
+		chmod +x /lib/thirdreality/hubv3-usb-sync-latest.sh > /dev/null 2>&1
+	fi
+
+	if [ -f "/usr/local/bin/supervisor" ]; then
+		chmod +x /usr/local/bin/supervisor > /dev/null 2>&1
+	fi
+
+	if [ -f "/etc/systemd/system/supervisor.service" ]; then
+		/usr/bin/systemctl enable supervisor.service
+        /usr/bin/systemctl start supervisor.service
+	fi
+
+	info "Install success."
+fi
 
 exit 0
 
