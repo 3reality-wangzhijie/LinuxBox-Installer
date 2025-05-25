@@ -3,6 +3,10 @@ set -e
 
 # 检查是安装还是升级
 if [ "$1" = "configure" ]; then
+	if [ -f "/usr/bin/mosquitto_passwd" ]; then 
+		rm -rf /etc/mosquitto/passwd
+		mosquitto_passwd -c /etc/mosquitto/passwd thirdreality thirdreality
+	fi
 	echo "Success"
 fi
 
