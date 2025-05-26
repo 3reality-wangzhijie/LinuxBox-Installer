@@ -60,6 +60,7 @@ if ! dpkg -l | grep -q "mosquitto " || ! dpkg -l | grep -q "mosquitto-clients"; 
 fi
 
 # post install
+
 if [ -f "/usr/bin/mosquitto_passwd" ]; then 
 	rm -rf /etc/mosquitto/passwd
 	mosquitto_passwd -b -c /etc/mosquitto/passwd thirdreality thirdreality
@@ -82,6 +83,8 @@ node --version # Should output V18.x, V20.x, V21.X
 npm --version # Should output 9.X or 10.X
 
 if [ ! -d "/opt/zigbee2mqtt" ]; then
+    cp ${current_dir}/zigbee2mqtt.service /etc/systemd/system/zigbee2mqtt.service
+
     mkdir /opt/zigbee2mqtt
     git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
     cd /opt/zigbee2mqtt
@@ -90,6 +93,7 @@ if [ ! -d "/opt/zigbee2mqtt" ]; then
     npm run build
 fi
 
+systemctl daemon-reload
 
 # 创建软件
 print_info "Create output directory ..."
@@ -132,6 +136,9 @@ cp /usr/share/lintian/overrides/mosquitto-clients ${output_dir}/usr/share/lintia
 mkdir -p ${output_dir}/lib/systemd/system
 cp /lib/systemd/system/mosquitto.service ${output_dir}/lib/systemd/system/mosquitto.service
 
+mkdir -p ${output_dir}/var/lib/mosquitto
+mkdir -p ${output_dir}/var/log/mosquitto/
+
 print_info "Backup nodejs ..."
 
 #libsystemd-dev_252.36-1~deb12u1_arm64.deb
@@ -159,6 +166,7 @@ cp /etc/systemd/system/zigbee2mqtt.service ${output_dir}/etc/systemd/system/zigb
 
 #
 print_info "backup default config files..."
+mkdir -p ${output_dir}/etc/mosquitto/
 cp ${current_dir}/configuration.yaml ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml.default
 cp ${current_dir}/mosquitto.conf ${output_dir}/etc/mosquitto/mosquitto.conf.default
 

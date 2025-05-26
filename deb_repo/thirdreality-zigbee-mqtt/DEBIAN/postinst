@@ -14,60 +14,62 @@ setup_mosquitto_user() {
 
 fix_permissions() {
     echo "fix permissions ..."
+    mkdir -p /var/lib/mosquitto
+    mkdir -p /var/log/mosquitto
     chown mosquitto /var/lib/mosquitto
     test ! -e /var/log/mosquitto || chown mosquitto /var/log/mosquitto
     test ! -e /var/log/mosquitto/mosquitto.log || chown mosquitto /var/log/mosquitto/mosquitto.log
+    echo "fix permissions success."
 }
 
 fix_manual_install() {
+    echo "fix manual install ..."
     # 检查是安装还是升级
-    if [ "$1" = "configure" ]; then
-        echo "Install library files ..."
-        if [ -f "/usr/lib/aarch64-linux-gnu/libcjson.so.1.7.15" ]; then
-            ln -snf /usr/lib/aarch64-linux-gnu/libcjson.so.1.7.15 /usr/lib/aarch64-linux-gnu/libcjson.so.1
-        fi
-
-        if [ -f "/usr/lib/aarch64-linux-gnu/libdlt.so.2.18.8" ]; then
-            ln -snf /usr/lib/aarch64-linux-gnu/libdlt.so.2.18.8 /usr/lib/aarch64-linux-gnu/libdlt.so.2
-        fi
-
-        if [ -f "/usr/lib/aarch64-linux-gnu/libmosquitto.so.2.0.11" ]; then
-            ln -snf /usr/lib/aarch64-linux-gnu/libmosquitto.so.2.0.11 /usr/lib/aarch64-linux-gnu/libmosquitto.so.1
-        fi
-
-        if [ -f "/usr/lib/node_modules/corepack/dist/corepack.js" ]; then
-            ln -snf /usr/lib/node_modules/corepack/dist/corepack.js /usr/bin/corepack
-        fi
-
-        if [ -f "/usr/lib/node_modules/npm/bin/npm-cli.js" ]; then
-            ln -snf /usr/lib/node_modules/npm/bin/npm-cli.js /usr/bin/npm
-        fi
-
-        if [ -f "/usr/lib/node_modules/npm/bin/npx-cli.js" ]; then
-            ln -snf /usr/lib/node_modules/npm/bin/npx-cli.js /usr/bin/npx
-        fi
-
-        echo "Install mosquitto passwd ..."
-        if [ -f "/usr/bin/mosquitto_passwd" ]; then 
-            rm -rf /etc/mosquitto/passwd || true
-            mosquitto_passwd -b -c /etc/mosquitto/passwd thirdreality thirdreality
-        fi
-
-        echo "Install mosquitto config ..."
-        if [ -f "/etc/mosquitto/mosquitto.conf.default" ]; then 
-            cp /etc/mosquitto/mosquitto.conf.default /etc/mosquitto/mosquitto.conf
-        fi
-
-        if [ -f "/opt/zigbee2mqtt/data/configuration.yaml.default" ]; then     
-            cp /opt/zigbee2mqtt/data/configuration.yaml.default /opt/zigbee2mqtt/data/configuration.yaml
-        fi
-
-        echo "Install mosquitto.service and zigbee2mqtt.service ..."
-        systemctl disable mosquitto.service || true
-        systemctl disable zigbee2mqtt.service || true
-
-        echo "Success"
+    echo "Install library files ..."
+    if [ -f "/usr/lib/aarch64-linux-gnu/libcjson.so.1.7.15" ]; then
+        ln -snf /usr/lib/aarch64-linux-gnu/libcjson.so.1.7.15 /usr/lib/aarch64-linux-gnu/libcjson.so.1
     fi
+
+    if [ -f "/usr/lib/aarch64-linux-gnu/libdlt.so.2.18.8" ]; then
+        ln -snf /usr/lib/aarch64-linux-gnu/libdlt.so.2.18.8 /usr/lib/aarch64-linux-gnu/libdlt.so.2
+    fi
+
+    if [ -f "/usr/lib/aarch64-linux-gnu/libmosquitto.so.2.0.11" ]; then
+        ln -snf /usr/lib/aarch64-linux-gnu/libmosquitto.so.2.0.11 /usr/lib/aarch64-linux-gnu/libmosquitto.so.1
+    fi
+
+    if [ -f "/usr/lib/node_modules/corepack/dist/corepack.js" ]; then
+        ln -snf /usr/lib/node_modules/corepack/dist/corepack.js /usr/bin/corepack
+    fi
+
+    if [ -f "/usr/lib/node_modules/npm/bin/npm-cli.js" ]; then
+        ln -snf /usr/lib/node_modules/npm/bin/npm-cli.js /usr/bin/npm
+    fi
+
+    if [ -f "/usr/lib/node_modules/npm/bin/npx-cli.js" ]; then
+        ln -snf /usr/lib/node_modules/npm/bin/npx-cli.js /usr/bin/npx
+    fi
+
+    echo "Install mosquitto passwd ..."
+    if [ -f "/usr/bin/mosquitto_passwd" ]; then 
+        rm -rf /etc/mosquitto/passwd >/dev/null || true
+        mosquitto_passwd -b -c /etc/mosquitto/passwd thirdreality thirdreality
+    fi
+
+    echo "Install mosquitto config ..."
+    if [ -f "/etc/mosquitto/mosquitto.conf.default" ]; then 
+        cp /etc/mosquitto/mosquitto.conf.default /etc/mosquitto/mosquitto.conf
+    fi
+
+    if [ -f "/opt/zigbee2mqtt/data/configuration.yaml.default" ]; then     
+        cp /opt/zigbee2mqtt/data/configuration.yaml.default /opt/zigbee2mqtt/data/configuration.yaml
+     fi
+
+    echo "Install mosquitto.service and zigbee2mqtt.service ..."
+    systemctl disable mosquitto.service >/dev/null || true
+    systemctl disable zigbee2mqtt.service >/dev/null || true
+
+    echo "fix manual install success ..."
 }
 
 case "$1" in
