@@ -99,22 +99,68 @@ print_info "syncing DEBIAN ..."
 rm -rf ${output_dir}/DEBIAN > /dev/null 2>&1
 cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
-mkdir -p ${output_dir}/var/cache/apt/archives
-mkdir -p ${output_dir}/lib/node_modules/pnpm
-mkdir -p ${output_dir}/opt/zigbee2mqtt
-mkdir -p ${output_dir}/etc/systemd/system
+print_info "Backup mosquitto ..."
+
+mkdir -p ${output_dir}/usr/lib/aarch64-linux-gnu/
+cp /usr/lib/aarch64-linux-gnu/libcjson.so.1.7.15 ${output_dir}/usr/lib/aarch64-linux-gnu/
+cp /usr/lib/aarch64-linux-gnu/libdlt.so.2.18.8 ${output_dir}/usr/lib/aarch64-linux-gnu/
+cp /usr/lib/aarch64-linux-gnu/libmosquitto.so.2.0.11 ${output_dir}/usr/lib/aarch64-linux-gnu/
+cp /usr/lib/aarch64-linux-gnu/mosquitto_dynamic_security.so ${output_dir}/usr/lib/aarch64-linux-gnu/
+
+mkdir -p ${output_dir}/usr/bin/
+cp /usr/bin/mosquitto_ctrl ${output_dir}/usr/bin/
+cp /usr/bin/mosquitto_passwd ${output_dir}/usr/bin/
+cp /usr/bin/mosquitto_pub ${output_dir}/usr/bin/
+cp /usr/bin/mosquitto_rr ${output_dir}/usr/bin/
+cp /usr/bin/mosquitto_sub ${output_dir}/usr/bin/
+
+mkdir -p ${output_dir}/usr/sbin/
+cp /usr/sbin/mosquitto  ${output_dir}/usr/sbin/
+
 mkdir -p ${output_dir}/etc/mosquitto
+cp /etc/mosquitto ${output_dir}/etc/ -R
 
-cp ${current_dir}/deb/mosquitto/*.deb ${output_dir}/var/cache/apt/archives/ -R
-cp ${current_dir}/deb/nodejs/*.deb ${output_dir}/var/cache/apt/archives/ -R
+mkdir -p ${output_dir}/etc/init.d/
+cp /etc/init.d/mosquitto ${output_dir}/etc/init.d/
 
-cp /lib/node_modules/pnpm ${output_dir}/lib/node_modules/ -R
+mkdir -p ${output_dir}/etc/logrotate.d/
+cp /etc/logrotate.d/mosquitto  ${output_dir}/etc/logrotate.d/
+
+mkdir -p ${output_dir}/usr/share/lintian/overrides/
+cp /usr/share/lintian/overrides/mosquitto-clients ${output_dir}/usr/share/lintian/overrides/
+
+mkdir -p ${output_dir}/lib/systemd/system
+cp /lib/systemd/system/mosquitto.service ${output_dir}/lib/systemd/system/mosquitto.service
+
+print_info "Backup nodejs ..."
+
+#libsystemd-dev_252.36-1~deb12u1_arm64.deb
+mkdir -p ${output_dir}/usr/include/systemd/
+cp /usr/include/systemd ${output_dir}/usr/include/ -R
+
+mkdir -p ${output_dir}/usr/lib/aarch64-linux-gnu/pkgconfig
+cp /usr/lib/aarch64-linux-gnu/pkgconfig/libsystemd.pc ${output_dir}/usr/lib/aarch64-linux-gnu/pkgconfig/
+
+mkdir -p ${output_dir}/usr/include/node/
+cp /usr/bin/node ${output_dir}/usr/bin/
+cp /usr/include/node/  ${output_dir}/usr/include/ -R
+
+mkdir -p ${output_dir}/opt/zigbee2mqtt
 cp /opt/zigbee2mqtt ${output_dir}/opt/ -R
-cp ${current_dir}/configuration.yaml ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml
 
+
+mkdir -p ${output_dir}/lib/node_modules
+cp /lib/node_modules/corepack ${output_dir}/lib/node_modules/ -R
+cp /lib/node_modules/npm ${output_dir}/lib/node_modules/ -R
+cp /lib/node_modules/pnpm ${output_dir}/lib/node_modules/ -R
+
+mkdir -p ${output_dir}/etc/systemd/system/
 cp /etc/systemd/system/zigbee2mqtt.service ${output_dir}/etc/systemd/system/zigbee2mqtt.service
-cp /etc/mosquitto/* ${output_dir}/etc/mosquitto/ -R
-rm -rf ${output_dir}/etc/mosquitto/passwd
+
+#
+print_info "backup default config files..."
+cp ${current_dir}/configuration.yaml ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml.default
+cp ${current_dir}/mosquitto.conf ${output_dir}/etc/mosquitto/mosquitto.conf.default
 
 # ---------------------
 
