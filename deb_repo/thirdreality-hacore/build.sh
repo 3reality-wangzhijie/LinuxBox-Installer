@@ -29,7 +29,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # 全局定义版本号
-export HOME_ASSISTANT_VERSION="2025.5.2"
+export HOME_ASSISTANT_VERSION="2025.5.3"
 
 #home-assistant-frontend==20250509.0
 export FRONTEND_VERSION="20250516.0" 
@@ -152,9 +152,9 @@ if [ ! -e "${service_path}/bin/hass" ]; then
     python3 -m pip install homeassistant=="$HOME_ASSISTANT_VERSION" home-assistant-frontend=="$FRONTEND_VERSION"
 
     # Check it https://github.com/home-assistant/core/blob/master/script/hassfest/docker/Dockerfile
-    python3 -m pip install stdlib-list==0.10.0 pipdeptree==2.25.1 tqdm==4.67.1 ruff==0.11.0 \
-        PyTurboJPEG==1.7.5 go2rtc-client==0.1.2 ha-ffmpeg==3.2.2 hassil==2.2.3 home-assistant-intents==2025.5.7 \
-        mutagen==1.47.0 pymicro-vad==1.0.1 pyspeex-noise==1.0.2
+    python3 -m pip install \
+        stdlib-list==0.10.0 pipdeptree==2.25.1 tqdm==4.67.1 ruff==0.11.0 \
+        PyTurboJPEG==1.7.5 go2rtc-client==0.1.2 ha-ffmpeg==3.2.2 hassil==2.2.3 home-assistant-intents==2025.5.7 mutagen==1.47.0 pymicro-vad==1.0.1 pyspeex-noise==1.0.2
 
     #hardware
     python3 -m pip install universal-silabs-flasher==0.0.30 ha-silabs-firmware-client==0.2.0 psutil-home-assistant==0.0.1

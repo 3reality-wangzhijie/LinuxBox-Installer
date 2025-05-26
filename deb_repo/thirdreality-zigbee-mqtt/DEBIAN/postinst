@@ -3,9 +3,23 @@ set -e
 
 # 检查是安装还是升级
 if [ "$1" = "configure" ]; then
+    if ! dpkg -l | grep -q "mosquitto " || ! dpkg -l | grep -q "mosquitto-clients"; then
+        print_info "Installing mosquitto and mosquitto-clients..."
+        apt -o Dir::Cache::archives="/var/cache/apt/archives" install -y mosquitto mosquitto-clients
+        systemctl enable mosquitto.service
+        systemctl disable mosquitto.service
+    fi
+
+    if ! dpkg -l | grep -q "nodejs "; then
+        print_info "Installing nodejs..."
+        apt -o Dir::Cache::archives="/var/cache/apt/archives" install -y nodejs libsystemd-dev   
+    fi
+
+    mosquitto -v
+
 	if [ -f "/usr/bin/mosquitto_passwd" ]; then 
-		rm -rf /etc/mosquitto/passwd
-		mosquitto_passwd -c /etc/mosquitto/passwd thirdreality thirdreality
+		rm -rf /etc/mosquitto/passwd || true
+		mosquitto_passwd -b -c /etc/mosquitto/passwd thirdreality thirdreality
 	fi
 	echo "Success"
 fi
