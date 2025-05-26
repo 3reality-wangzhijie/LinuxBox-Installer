@@ -155,6 +155,9 @@ cp /usr/include/node/  ${output_dir}/usr/include/ -R
 mkdir -p ${output_dir}/opt/zigbee2mqtt
 cp /opt/zigbee2mqtt ${output_dir}/opt/ -R
 
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/database.db
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/log
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/state.json
 
 mkdir -p ${output_dir}/lib/node_modules
 cp /lib/node_modules/corepack ${output_dir}/lib/node_modules/ -R
@@ -167,6 +170,7 @@ cp /etc/systemd/system/zigbee2mqtt.service ${output_dir}/etc/systemd/system/zigb
 #
 print_info "backup default config files..."
 mkdir -p ${output_dir}/etc/mosquitto/
+
 cp ${current_dir}/configuration.yaml ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml.default
 cp ${current_dir}/mosquitto.conf ${output_dir}/etc/mosquitto/mosquitto.conf.default
 
