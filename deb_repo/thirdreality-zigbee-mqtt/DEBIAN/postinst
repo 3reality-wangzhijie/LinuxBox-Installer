@@ -32,6 +32,10 @@ fix_manual_install() {
     #     ln -snf /usr/lib/node_modules/npm/bin/npx-cli.js /usr/bin/npx
     # fi
 
+    if [ -f "/lib/thirdreality/post-install-zigbee2mqtt.sh" ]; then
+        chmod +x /lib/thirdreality/post-install-zigbee2mqtt.sh
+    fi
+
     echo "Install mosquitto passwd ..."
     if [ -f "/usr/bin/mosquitto_passwd" ]; then 
         rm -rf /etc/mosquitto/passwd >/dev/null || true

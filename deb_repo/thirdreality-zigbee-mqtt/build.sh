@@ -65,13 +65,14 @@ if [ -f "/usr/bin/mosquitto_passwd" ]; then
 	rm -rf /etc/mosquitto/passwd
 	mosquitto_passwd -b -c /etc/mosquitto/passwd thirdreality thirdreality
 fi
+
 cp ${current_dir}/mosquitto.conf /etc/mosquitto/mosquitto.conf
 
 systemctl start mosquitto.service
 
 if ! dpkg -l | grep -q "nodejs "; then
     print_info "Installing nodejs..."
-    #curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     apt install -y nodejs libsystemd-dev   
 fi
 
@@ -103,6 +104,7 @@ print_info "syncing DEBIAN ..."
 rm -rf ${output_dir}/DEBIAN > /dev/null 2>&1
 cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
+
 mkdir -p ${output_dir}/lib/thirdreality/archives
 
 print_info "Backup mosquitto debs ..."
@@ -111,6 +113,7 @@ cp ${output_dir}/deb/mosquitto/*.deb ${output_dir}/lib/thirdreality/archives/
 print_info "Backup nodejs debs ..."
 cp ${output_dir}/deb/nodejs/*.deb ${output_dir}/lib/thirdreality/archives/
 
+cp ${current_dir}/post-install-zigbee2mqtt.sh ${output_dir}/lib/thirdreality/
 
 print_info "Backup zigbee2mqtt ..."
 
