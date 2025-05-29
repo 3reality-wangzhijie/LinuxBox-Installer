@@ -6,7 +6,7 @@ output_dir="${current_dir}/output"
 REBUILD=false
 CLEAN=false
 
-SCRIPT="ThirdReality"
+SCRIPT="R3"
 print_info() { echo -e "\e[1;34m[${SCRIPT}] INFO:\e[0m $1"; }
 print_error() { echo -e "\e[1;31m[${SCRIPT}] ERROR:\e[0m $1"; }
 

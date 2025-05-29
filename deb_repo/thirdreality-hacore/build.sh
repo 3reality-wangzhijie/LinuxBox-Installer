@@ -2,14 +2,14 @@
 
 current_dir=$(pwd)
 output_dir="${current_dir}/output"
-service_path="/srv/homeassistant"
-matter_path="/srv/matter_server"
+home_assistant_path="/srv/homeassistant"
+matter_server_path="/srv/matter_server"
 python3_dir="/usr/local/python3" # install target directory
 
 REBUILD=false
 CLEAN=false
 
-SCRIPT="ThirdReality"
+SCRIPT="R3"
 print_info() { echo -e "\e[1;34m[${SCRIPT}] INFO:\e[0m $1"; }
 print_error() { echo -e "\e[1;31m[${SCRIPT}] ERROR:\e[0m $1"; }
 
@@ -35,7 +35,7 @@ export HOME_ASSISTANT_VERSION="2025.5.3"
 export FRONTEND_VERSION="20250516.0" 
 
 #python-matter-server==7.0.0
-export MATTER_SERVER_VERSION="7.0.0"
+export MATTER_SERVER_VERSION="8.0.0"
 
 CURRENT_PLATFORM=aarch64
 
@@ -60,11 +60,11 @@ if [[ "$CLEAN" == true ]]; then
 
     rm -rf /var/lib/homeassistant/*.* || true
 
-    print_info "Removing ${service_path} ..."
-    rm -rf ${service_path}
+    print_info "Removing ${home_assistant_path} ..."
+    rm -rf ${home_assistant_path}
 
-    print_info "Removing ${matter_path} ..."
-    rm -rf ${matter_path}
+    print_info "Removing ${matter_server_path} ..."
+    rm -rf ${matter_server_path}
 
     systemctl daemon-reload
 
@@ -75,14 +75,14 @@ fi
 if [[ "$REBUILD" == true ]]; then
     rm -rf "${output_dir}" > /dev/null 2>&1
     mkdir -p "${output_dir}"
-    
 fi
 
 mkdir -p "${output_dir}"
 
 cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
-chip_example_url="https://github.com/home-assistant-libs/matter-linux-ota-provider/releases/download/2024.7.2"
+chip_example_url="https://github.com/home-assistant-libs/matter-linux-ota-provider/releases/download/2025.5.0"
+#chip_example_url="https://github.com/home-assistant-libs/matter-linux-ota-provider/releases/download/2024.7.2"
 
 download_file() {
     local url=$1
@@ -131,24 +131,19 @@ if [ ! -f "/usr/local/bin/chip-ota-provider-app" ]; then
     fi
 fi
 
-if [ ! -e "${service_path}/bin/hass" ]; then
-    print_info "Building python venv for hacore_${version}.deb ..."
-    mkdir -p ${service_path}
-    mkdir -p ${matter_path}
-    mkdir -p /data /updates
-    chmod 777 /data /updates
-    touch /tmp/chip_kvs && chmod 766 /tmp/chip_kvs || { print_error "Failed to setup directories"; }
+if [ ! -e "${home_assistant_path}/bin/hass" ]; then
+    print_info "[1]Building python homeassistant venv for hacore_${version}.deb ..."
+    mkdir -p ${home_assistant_path}
 
-    print_info "Using python: ${python3_dir}/bin/python3"
-    cd ${service_path}
+    print_info "Using python[home_assistant]: ${python3_dir}/bin/python3"
+    cd ${home_assistant_path}
     ${python3_dir}/bin/python3 -m venv .
-    source ${service_path}/bin/activate
+    source ${home_assistant_path}/bin/activate
 
     pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
     pip3 config set install.trusted-host pypi.tuna.tsinghua.edu.cn
 
     python3 -m pip install --upgrade pip wheel
-    python3 -m pip install python-matter-server[server]=="$MATTER_SERVER_VERSION"
     python3 -m pip install homeassistant=="$HOME_ASSISTANT_VERSION" home-assistant-frontend=="$FRONTEND_VERSION"
 
     # Check it https://github.com/home-assistant/core/blob/master/script/hassfest/docker/Dockerfile
@@ -165,13 +160,37 @@ if [ ! -e "${service_path}/bin/hass" ]; then
     python3 -m pip install zigpy-cli==1.1.0
     
     # patch for python-matter-server[server]==7.0.1, dependency will restore to 7.0.0
-    cp ${current_dir}/storage.py /srv/homeassistant/lib/python3.13/site-packages/matter_server/server/storage.py
+    #cp ${current_dir}/storage.py /srv/homeassistant/lib/python3.13/site-packages/matter_server/server/storage.py
 
     # patch for zigbee config display
-    cp ${current_dir}/websocket_api.py /srv/homeassistant/lib/python3.13/site-packages/homeassistant/components/zha/websocket_api.py
+    #cp ${current_dir}/websocket_api.py /srv/homeassistant/lib/python3.13/site-packages/homeassistant/components/zha/websocket_api.py
 
     deactivate
 fi
+
+#/srv/matter_server/bin/matter-server
+if [ ! -e "${matter_server_path}/bin/matter-server" ]; then
+    print_info "[2]Building python matter-server venv for hacore_${version}.deb ..."
+    mkdir -p ${matter_server_path}
+
+    mkdir -p /data /updates
+    chmod 777 /data /updates
+    touch /tmp/chip_kvs && chmod 766 /tmp/chip_kvs || { print_error "Failed to setup directories"; }
+
+
+    print_info "Using python[matter-server]: ${python3_dir}/bin/python3"
+    cd ${matter_server_path}
+    ${python3_dir}/bin/python3 -m venv .
+    source ${matter_server_path}/bin/activate
+
+    pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
+    pip3 config set install.trusted-host pypi.tuna.tsinghua.edu.cn
+
+    python3 -m pip install python-matter-server[server]=="$MATTER_SERVER_VERSION"
+
+    deactivate
+fi
+
 
 print_info "Install help scripts and service ..."
 
@@ -184,15 +203,15 @@ if [ ! -f "/usr/local/bin/zigpy_help.sh" ]; then
     chmod +x /usr/local/bin/zigpy_help.sh
 fi
 
-if [ ! -f "${service_path}/bin/zigpy_hw_info.sh" ]; then
-    cp ${current_dir}/zigpy_hw_info.sh ${service_path}/bin/zigpy_hw_info.sh
-    chmod +x ${service_path}/bin/zigpy_hw_info.sh
+if [ ! -f "${home_assistant_path}/bin/zigpy_hw_info.sh" ]; then
+    cp ${current_dir}/zigpy_hw_info.sh ${home_assistant_path}/bin/zigpy_hw_info.sh
+    chmod +x ${home_assistant_path}/bin/zigpy_hw_info.sh
 fi
 
-if [ ! -f "${service_path}/bin/home_assistant_helper.sh" ]; then
-    cp ${current_dir}/home_assistant_helper.sh ${service_path}/bin/home_assistant_helper.sh
-    cp ${current_dir}/home_assistant_pre_check.py ${service_path}/bin/home_assistant_pre_check.py
-    chmod +x ${service_path}/bin/home_assistant_helper.sh
+if [ ! -f "${home_assistant_path}/bin/home_assistant_helper.sh" ]; then
+    cp ${current_dir}/home_assistant_helper.sh ${home_assistant_path}/bin/home_assistant_helper.sh
+    cp ${current_dir}/home_assistant_pre_check.py ${home_assistant_path}/bin/home_assistant_pre_check.py
+    chmod +x ${home_assistant_path}/bin/home_assistant_helper.sh
 fi
 
 if [ ! -f "/usr/lib/systemd/system/home-assistant.service" ]; then
@@ -240,3 +259,4 @@ rm -rf ${output_dir}/usr > /dev/null 2>&1
 rm -rf ${output_dir}/lib > /dev/null 2>&1
 
 print_info "Build hacore_${version}.deb finished ..."
+

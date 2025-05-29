@@ -9,7 +9,7 @@ CLEAN=false
 #Fixed to commit
 commit_sha1="bb4252342d521736c2cdad0058ce90f54b35c75c"
 
-SCRIPT="ThirdReality"
+SCRIPT="R3"
 print_info() { echo -e "\e[1;34m[${SCRIPT}] INFO:\e[0m $1"; }
 print_error() { echo -e "\e[1;31m[${SCRIPT}] ERROR:\e[0m $1"; }
 

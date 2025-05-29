@@ -10,7 +10,7 @@ PYTHON_VERSION="3.13" # main version
 INSTALL_PYTHON_VERSION="3.13.3" # sub verion, for download
 python3_dir="/usr/local/python3" # install target directory
 
-SCRIPT="ThirdReality"
+SCRIPT="R3"
 print_info() { echo -e "\e[1;34m[${SCRIPT}] INFO:\e[0m $1"; }
 print_error() { echo -e "\e[1;31m[${SCRIPT}] ERROR:\e[0m $1"; }
 
