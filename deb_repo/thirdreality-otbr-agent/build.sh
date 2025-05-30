@@ -121,8 +121,8 @@ if [ ! -d "${current_dir}/ot-br-posix" ]; then
     fi
 
     # OTBR_VENDOR_NAME="Home Assistant" OTBR_PRODUCT_NAME="OpenThread Border Router"
-    cd "${current_dir}/ot-br-posix"; WEB_GUI=1 ./script/bootstrap
-    cd "${current_dir}/ot-br-posix"; INFRA_IF_NAME=wlan0 WEB_GUI=1 ./script/setup
+    cd "${current_dir}/ot-br-posix"; WEB_GUI=0 ./script/bootstrap
+    cd "${current_dir}/ot-br-posix"; INFRA_IF_NAME=wlan0 WEB_GUI=0 ./script/setup
 
     cp ${current_dir}/otbr-agent /etc/default/
 

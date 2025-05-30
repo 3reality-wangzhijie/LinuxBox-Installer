@@ -1,4 +1,4 @@
-Package: thirdreality-flash-firmware
+Package: thirdreality-zigpy-handler
 Version: 2025.05.21
 Section: utils
 Priority: optional

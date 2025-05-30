@@ -9,25 +9,25 @@
 #libsystemd-dev_252.36-1~deb12u1_arm64.deb
 #nodejs_22.16.0-1nodesource1_arm64.deb
 
-DEFAULT_ARCH="/var/cache/apt/archives"
+DEFAULT_APT_CACHE="/var/cache/apt/archives"
 
 if [ -d "/usr/lib/thirdreality/archives" ]; then
-    rm -rf ${DEFAULT_ARCH}/*.deb
+    rm -rf ${DEFAULT_APT_CACHE}/*.deb
 
-    cp /usr/lib/thirdreality/archives/*.deb ${DEFAULT_ARCH}
+    cp /usr/lib/thirdreality/archives/*.deb ${DEFAULT_APT_CACHE}
 
-    dpkg -i ${DEFAULT_ARCH}/libcjson1_*.deb > /dev/null || true
-    dpkg -i ${DEFAULT_ARCH}/libdlt2_*.deb > /dev/null || true
-    dpkg -i ${DEFAULT_ARCH}/libmosquitto1_*.deb > /dev/null || true
-    dpkg -i ${DEFAULT_ARCH}/mosquitto-clients_*.deb > /dev/null || true
-    dpkg -i ${DEFAULT_ARCH}/mosquitto_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/libcjson1_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/libdlt2_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/libmosquitto1_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/mosquitto-clients_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/mosquitto_*.deb > /dev/null || true
 
-    dpkg -i ${DEFAULT_ARCH}/libsystemd-dev_*.deb > /dev/null || true
-    dpkg -i ${DEFAULT_ARCH}/nodejs_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/libsystemd-dev_*.deb > /dev/null || true
+    dpkg -i ${DEFAULT_APT_CACHE}/nodejs_*.deb > /dev/null || true
     
     apt-get install -f > /dev/null || true
 
-    rm -rf ${DEFAULT_ARCH}/*.deb
+    rm -rf ${DEFAULT_APT_CACHE}/*.deb
 fi
 
 exit 0
