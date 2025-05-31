@@ -88,6 +88,10 @@ configure_zigbee2mqtt() {
     
     log "Installing zigbee2mqtt configuration"
     cp "$THIRDREALITY_CONF/configuration.yaml.default" "$ZIGBEE2MQTT_DIR/configuration.yaml"
+
+    if [ -f "/usr/lib/node_modules/pnpm/bin/pnpm.cjs" ]; then
+        ln -snf /usr/lib/node_modules/pnpm/bin/pnpm.cjs /usr/bin/pnpm
+    fi    
 }
 
 stop_services() {

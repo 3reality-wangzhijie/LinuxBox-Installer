@@ -15,6 +15,10 @@ if [ "$1" = "remove" ]; then
     echo "Remove library files ..."
     rm -rf /opt/zigbee2mqtt/data/log
 
+    if [ -f "/usr/bin/pnpm" ]; then
+        rm -rf /usr/bin/pnpm
+    fi
+
     echo "Remove success."
 fi
 

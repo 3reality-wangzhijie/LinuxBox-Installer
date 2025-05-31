@@ -20,18 +20,27 @@ if [ "$1" = "configure" ]; then
     chmod 777 /data /updates
     touch /tmp/chip_kvs && chmod 766 /tmp/chip_kvs || { echo "[WARN]Failed to setup directories"; }	
 
-	if [ -e "/srv/homeassistant/bin/zigpy_hw_info.sh" ]; then
-		chmod +x /srv/homeassistant/bin/zigpy_hw_info.sh > /dev/null 2>&1
-
-		if [ -e "/var/lib/homeassistant/homeassistant/configuration.yaml" ]; then
-			/srv/homeassistant/bin/zigpy_hw_info.sh > /dev/null 2>&1 || {
-        		echo "[WARN]zigpy_hw_info.sh failed, but continuing..." 
-    		}
-		fi
+	if [ -e "/srv/homeassistant/bin/home_assistant_helper.sh" ]; then
+		chmod +x /srv/homeassistant/bin/home_assistant_boot_check.sh > /dev/null 2>&1
 	fi
 
-	if [ -e "/srv/homeassistant/bin/home_assistant_helper.sh" ]; then
-		chmod +x /srv/homeassistant/bin/home_assistant_helper.sh > /dev/null 2>&1
+	if [ -e "/srv/homeassistant/bin/home_assistant_zha_enable.py" ]; then
+		chmod +x /srv/homeassistant/bin/home_assistant_zha_enable.py > /dev/null 2>&1
+	fi
+
+	if [ -e "/srv/homeassistant/bin/home_assistant_z2m_enable.py" ]; then
+		chmod +x /srv/homeassistant/bin/home_assistant_z2m_enable.py > /dev/null 2>&1
+	fi
+
+	info "Update zigbee default config ..."
+	if [ -e "/srv/homeassistant/bin/home_assistant_init.sh" ]; then
+		chmod +x /srv/homeassistant/bin/home_assistant_init.sh > /dev/null 2>&1
+
+		if [ -e "/var/lib/homeassistant/homeassistant/configuration.yaml" ]; then
+			/srv/homeassistant/bin/home_assistant_init.sh > /dev/null 2>&1 || {
+        		echo "[WARN]home_assistant_init.sh failed, but continuing..." 
+    		}
+		fi
 	fi
 
 	/usr/bin/systemctl daemon-reload
@@ -44,7 +53,7 @@ if [ "$1" = "configure" ]; then
         /usr/bin/systemctl start matter-server.service
 	fi
 	
-	info "Install success."
+	info "Install HomeAssistant-Core success."
 fi
 
 exit 0

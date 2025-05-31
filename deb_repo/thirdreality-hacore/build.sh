@@ -203,15 +203,26 @@ if [ ! -f "/usr/local/bin/zigpy_help.sh" ]; then
     chmod +x /usr/local/bin/zigpy_help.sh
 fi
 
-if [ ! -f "${home_assistant_path}/bin/zigpy_hw_info.sh" ]; then
-    cp ${current_dir}/zigpy_hw_info.sh ${home_assistant_path}/bin/zigpy_hw_info.sh
-    chmod +x ${home_assistant_path}/bin/zigpy_hw_info.sh
+if [ ! -f "${home_assistant_path}/bin/home_assistant_init.sh" ]; then
+    cp ${current_dir}/home_assistant_init.sh ${home_assistant_path}/bin/home_assistant_init.sh
+    chmod +x ${home_assistant_path}/bin/home_assistant_init.sh
 fi
 
-if [ ! -f "${home_assistant_path}/bin/home_assistant_helper.sh" ]; then
-    cp ${current_dir}/home_assistant_helper.sh ${home_assistant_path}/bin/home_assistant_helper.sh
-    cp ${current_dir}/home_assistant_pre_check.py ${home_assistant_path}/bin/home_assistant_pre_check.py
-    chmod +x ${home_assistant_path}/bin/home_assistant_helper.sh
+if [ ! -f "${home_assistant_path}/bin/home_assistant_boot_check.sh" ]; then
+    cp ${current_dir}/home_assistant_boot_check.sh ${home_assistant_path}/bin/home_assistant_boot_check.sh
+    cp ${current_dir}/home_assistant_boot_check.py ${home_assistant_path}/bin/home_assistant_boot_check.py
+    chmod +x ${home_assistant_path}/bin/home_assistant_boot_check.sh
+    chmod +x ${home_assistant_path}/bin/home_assistant_boot_check.py
+fi
+
+if [ ! -f "${home_assistant_path}/bin/home_assistant_zha_enable.py" ]; then
+    cp ${current_dir}/home_assistant_zha_enable.py ${home_assistant_path}/bin/home_assistant_zha_enable.py
+    chmod +x ${home_assistant_path}/bin/home_assistant_zha_enable.py
+fi
+
+if [ ! -f "${home_assistant_path}/bin/home_assistant_z2m_enable.py" ]; then
+    cp ${current_dir}/home_assistant_z2m_enable.py ${home_assistant_path}/bin/home_assistant_z2m_enable.py
+    chmod +x ${home_assistant_path}/bin/home_assistant_z2m_enable.py
 fi
 
 if [ ! -f "/usr/lib/systemd/system/home-assistant.service" ]; then
@@ -257,6 +268,7 @@ dpkg-deb --build ${output_dir} ${current_dir}/hacore_${version}.deb
 rm -rf ${output_dir}/srv > /dev/null 2>&1
 rm -rf ${output_dir}/usr > /dev/null 2>&1
 rm -rf ${output_dir}/lib > /dev/null 2>&1
+#rm -rf ${output_dir} > /dev/null 2>&1
 
 print_info "Build hacore_${version}.deb finished ..."
 

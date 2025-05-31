@@ -105,8 +105,8 @@ if [ ! -e "${zigpy_dir}/bin/activate" ]; then
     deactivate
 fi
 
-if [ ! -e "${zigpy_dir}/bin/zigpy_hw_info.sh" ]; then
-    cp ${current_dir}/zigpy_hw_info.sh ${zigpy_dir}/bin/zigpy_hw_info.sh
+if [ ! -e "${zigpy_dir}/bin/home_assistant_init.sh" ]; then
+    cp ${current_dir}/home_assistant_init.sh ${zigpy_dir}/bin/home_assistant_init.sh
 fi
 
 echo "Backup zigpy files for hassio-config_${version}.deb ..."

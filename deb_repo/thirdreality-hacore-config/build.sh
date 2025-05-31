@@ -2,7 +2,7 @@
 
 current_dir=$(pwd)
 output_dir="${current_dir}/output"
-config_dir="/var/lib/homeassistant"
+config_dir="/var/lib/"
 
 REBUILD=false
 CLEAN=false
@@ -33,7 +33,6 @@ if [[ "$CLEAN" == true ]]; then
 
     rm -rf ${output_dir}/var > /dev/null 2>&1
     rm -rf ${output_dir}/etc > /dev/null 2>&1
-    rm -rf ${output_dir}/usr > /dev/null 2>&1
 
     rm -rf "${output_dir}" > /dev/null 2>&1
 
@@ -51,7 +50,6 @@ if [[ "$REBUILD" == true ]]; then
 
     rm -rf ${output_dir}/var > /dev/null 2>&1
     rm -rf ${output_dir}/etc > /dev/null 2>&1
-    rm -rf ${output_dir}/usr > /dev/null 2>&1
 
     rm -rf "${output_dir}" > /dev/null 2>&1
     rm -rf "${config_dir}" > /dev/null 2>&1
@@ -72,13 +70,12 @@ cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
 if [ ! -d "${config_dir}/homeassistant" ]; then
     print_info "Copying homeassistant files to ${config_dir} ..."
-    cp ${current_dir}/homeassistant/*  "${config_dir}/" -R
+    cp ${current_dir}/homeassistant  "${config_dir}/" -R
 fi
 
 if [ ! -d "${output_dir}/var/lib/homeassistant" ]; then
     rm -rf ${output_dir}/var > /dev/null 2>&1
     rm -rf ${output_dir}/etc > /dev/null 2>&1 
-    rm -rf ${output_dir}/usr > /dev/null 2>&1
 
     mkdir -p ${output_dir}/var/lib/homeassistant
     chmod 755 ${output_dir}/var/lib/homeassistant
@@ -90,7 +87,8 @@ if [ ! -d "${output_dir}/var/lib/homeassistant" ]; then
 
     print_info "Copying homeassistant files from ${config_dir} to ${output_dir} ..."
 
-    cp ${config_dir}/* ${output_dir}/var/lib/homeassistant/ -R
+    cp /var/lib/homeassistant ${output_dir}/var/lib/ -R
+    #cp ${config_dir}/homeassistant ${output_dir}/var/lib/ -R
     rm -rf ${output_dir}/var/lib/homeassistant/homeassistant/.HA_VERSION
 
     if [ -f "/etc/hassio.json" ]; then

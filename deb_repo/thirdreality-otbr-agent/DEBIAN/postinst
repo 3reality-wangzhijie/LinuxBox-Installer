@@ -151,6 +151,6 @@ if [ "$1" = "configure" ]; then
         /usr/bin/systemctl stop otbr-agent || true
     fi
 
-	echo "Success"
+	info "Install OTBR-Agent success."
 fi
 

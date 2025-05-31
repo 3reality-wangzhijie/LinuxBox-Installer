@@ -235,6 +235,7 @@ dpkg-deb --build ${output_dir} ${current_dir}/otbr-agent_${version}.deb
 
 rm -rf ${output_dir}/usr > /dev/null 2>&1
 rm -rf ${output_dir}/etc > /dev/null 2>&1
+rm -rf ${output_dir} > /dev/null 2>&1
 
 print_info "Build otbr-agent_${version}.deb finished ..."
 
