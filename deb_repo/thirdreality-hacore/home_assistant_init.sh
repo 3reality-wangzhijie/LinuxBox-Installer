@@ -4,6 +4,7 @@
 CONFIG_DIR="/var/lib/homeassistant"
 VENV_PATH="/srv/homeassistant/bin/activate"
 ZHA_CONF="${CONFIG_DIR}/zha.conf"
+DEVICE_REGISTRY="/var/lib/homeassistant/homeassistant/.storage/core.device_registry"
 
 # Function to execute zigpy command and retrieve IEEE address
 function get_zigpy_ieee_from_device {
