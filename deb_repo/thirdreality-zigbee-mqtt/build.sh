@@ -80,8 +80,11 @@ if [ ! -d "/lib/node_modules/pnpm" ]; then
     npm install -g pnpm
 fi
 
-node --version # Should output V18.x, V20.x, V21.X
-npm --version # Should output 9.X or 10.X
+print_info "node version should output V18.x, V20.x, V21.X, current: \e[1;31m $(node --version)\e[0m "
+#node --version # Should output V18.x, V20.x, V21.X
+
+print_info "npm version should output 9.X or 10.X, current: \e[1;31m $(npm --version)\e[0m "
+#npm --version # Should output 9.X or 10.X
 
 if [ ! -d "/opt/zigbee2mqtt" ]; then
     cp ${current_dir}/zigbee2mqtt.service /etc/systemd/system/zigbee2mqtt.service
@@ -89,9 +92,10 @@ if [ ! -d "/opt/zigbee2mqtt" ]; then
     mkdir /opt/zigbee2mqtt
     git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
     cd /opt/zigbee2mqtt
-    npm ci
+    #npm ci
+    pnpm i --frozen-lockfile
     cp ${current_dir}/configuration.yaml /opt/zigbee2mqtt/data/configuration.yaml
-    npm run build
+    #npm run build
 fi
 
 systemctl daemon-reload
@@ -106,12 +110,13 @@ cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
 
 mkdir -p ${output_dir}/lib/thirdreality/archives
+mkdir -p ${output_dir}/lib/thirdreality/conf
 
 print_info "Backup mosquitto debs ..."
-cp ${output_dir}/deb/mosquitto/*.deb ${output_dir}/lib/thirdreality/archives/
+cp ${current_dir}/deb/mosquitto/*.deb ${output_dir}/lib/thirdreality/archives/
 
 print_info "Backup nodejs debs ..."
-cp ${output_dir}/deb/nodejs/*.deb ${output_dir}/lib/thirdreality/archives/
+cp ${current_dir}/deb/nodejs/*.deb ${output_dir}/lib/thirdreality/archives/
 
 cp ${current_dir}/post-install-zigbee2mqtt.sh ${output_dir}/lib/thirdreality/
 
@@ -134,9 +139,8 @@ cp /etc/systemd/system/zigbee2mqtt.service ${output_dir}/etc/systemd/system/zigb
 
 #
 print_info "backup default config files..."
-mkdir -p ${output_dir}/etc/mosquitto/
-cp ${current_dir}/configuration.yaml ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml.default
-cp ${current_dir}/mosquitto.conf ${output_dir}/etc/mosquitto/mosquitto.conf.default
+cp ${current_dir}/configuration.yaml ${output_dir}/lib/thirdreality/conf/configuration.yaml.default
+cp ${current_dir}/mosquitto.conf ${output_dir}/lib/thirdreality/conf/mosquitto.conf.default
 
 # ---------------------
 print_info "Start to build zigbee-mqtt_${version}.deb ..."

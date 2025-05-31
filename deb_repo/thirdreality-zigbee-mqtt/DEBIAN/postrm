@@ -3,9 +3,7 @@ set -e
 
 case "$1" in
     purge)
-        rm -rf /opt/zigbee2mqtt/data/database.db
-        rm -rf /opt/zigbee2mqtt/data/log
-        rm -rf /opt/zigbee2mqtt/data/state.json
+        rm -rf /opt/zigbee2mqtt/data/*
         rm -rf /opt/zigbee2mqtt/
     ;;
     remove|abort-install|abort-upgrade|disappear)
