@@ -87,15 +87,18 @@ if [ ! -d "${output_dir}/var/lib/homeassistant" ]; then
 
     print_info "Copying homeassistant files from ${config_dir} to ${output_dir} ..."
 
-    cp /var/lib/homeassistant ${output_dir}/var/lib/ -R
+    cp ${current_dir}/homeassistant ${output_dir}/var/lib/ -R
     #cp ${config_dir}/homeassistant ${output_dir}/var/lib/ -R
-    rm -rf ${output_dir}/var/lib/homeassistant/homeassistant/.HA_VERSION
+    #rm -rf ${output_dir}/var/lib/homeassistant/homeassistant/.HA_VERSION
+    echo $version > ${output_dir}/var/lib/homeassistant/homeassistant/.HA_VERSION
 
     if [ -f "/etc/hassio.json" ]; then
         cp /etc/hassio.json ${output_dir}/etc/ 
     else
         print_info "No /etc/hassio.json found, skipping copy."
     fi
+
+    cp ${current_dir}/automation-robot.conf ${output_dir}/etc/
 fi
 
 print_info "Start to build hacore-config_${version}.deb ..."

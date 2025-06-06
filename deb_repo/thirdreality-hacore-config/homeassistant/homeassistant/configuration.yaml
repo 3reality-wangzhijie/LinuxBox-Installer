@@ -29,4 +29,5 @@ recorder:
       - sun.sun # Don't record sun data
     event_types:
       - call_service # Don't record actions
+
 #
