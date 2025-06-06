@@ -4,10 +4,6 @@
   "key": "auth_provider.homeassistant",
   "data": {
     "users": [
-      {
-        "username": "root",
-        "password": "JDJiJDEyJFVWakxYVUQ4enpocU8wNTJSWjVaSC5MYXhsQ0RHT09VM29aT1hsa1pWMkp0NTBFUVJrVGtL"
-      }
     ]
   }
 }
