@@ -6,11 +6,17 @@ Quick installer for HomeAssistant, zigbee2mqtt, Homekit bridge etc
 
 Official Document: [Jump to home-assistant.io](https://www.home-assistant.io/installation/linux#install-home-assistant-core)
 
+### version 2025.6.0
+File List:
+- hacore-config_2025.6.0.deb [Download hacore-config](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.6.0/hacore-config_2025.6.0.deb)
+- hacore_2025.6.0.deb [Download hacore](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.6.0/hacore_2025.6.0.deb)
+- otbr-agent_2025.06.12.deb [Download otbr-agent](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.6.0/otbr-agent_2025.06.12.deb)
+
 ### version 2025.5.3
 File List:
-- hacore-config_2025.5.3.deb [Download hacore-config](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.5.3/hacore-config_2025.5.3.deb)
-- hacore_2025.5.3.deb [Download hacore](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.5.3/hacore_2025.5.3.deb)
-- otbr-agent_2025.05.29.deb [Download otbr-agent](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.5.3/otbr-agent_2025.05.29.deb)
+- hacore-config_2025.5.3.deb 
+- hacore_2025.5.3.deb 
+- otbr-agent_2025.05.29.deb 
 - zigbee-mqtt_2.3.0.deb [Download zigbee-mqtt](https://github.com/thirdreality/LinuxBox-Installer/releases/download/2025.5.3/zigbee-mqtt_2.3.0.deb)
 
 ### version 2025.4.3
