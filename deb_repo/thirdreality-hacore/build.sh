@@ -29,10 +29,10 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # 全局定义版本号
-export HOME_ASSISTANT_VERSION="2025.5.3"
+export HOME_ASSISTANT_VERSION="2025.6.0"
 
 #home-assistant-frontend==20250509.0
-export FRONTEND_VERSION="20250516.0" 
+export FRONTEND_VERSION="20250531.2" 
 
 #python-matter-server==7.0.0
 export MATTER_SERVER_VERSION="8.0.0"
@@ -148,10 +148,21 @@ if [ ! -e "${home_assistant_path}/bin/hass" ]; then
 
     # Check it https://github.com/home-assistant/core/blob/master/script/hassfest/docker/Dockerfile
     python3 -m pip install \
-        stdlib-list==0.10.0 pipdeptree==2.25.1 tqdm==4.67.1 ruff==0.11.0 \
-        PyTurboJPEG==1.7.5 go2rtc-client==0.1.2 ha-ffmpeg==3.2.2 hassil==2.2.3 home-assistant-intents==2025.5.7 mutagen==1.47.0 pymicro-vad==1.0.1 pyspeex-noise==1.0.2
+        stdlib-list==0.10.0 \
+        pipdeptree==2.26.1 \
+        tqdm==4.67.1 \
+        ruff==0.11.0 \
+        PyTurboJPEG==1.7.5 \
+        go2rtc-client==0.2.1 \
+        ha-ffmpeg==3.2.2 \
+        hassil==2.2.3 \
+        home-assistant-intents==2025.6.10 \
+        mutagen==1.47.0 \
+        pymicro-vad==1.0.1 \
+        pyspeex-noise==1.0.2
 
-    #hardware
+    # homeassistant.components.homeassistant_hardware
+    # homeassistant.components.hardware
     python3 -m pip install universal-silabs-flasher==0.0.30 ha-silabs-firmware-client==0.2.0 psutil-home-assistant==0.0.1
     
     # homeassistant.components.thread
@@ -159,16 +170,11 @@ if [ ! -e "${home_assistant_path}/bin/hass" ]; then
 
     python3 -m pip install zigpy-cli==1.1.0
     
-    # patch for python-matter-server[server]==7.0.1, dependency will restore to 7.0.0
-    #cp ${current_dir}/storage.py /srv/homeassistant/lib/python3.13/site-packages/matter_server/server/storage.py
-
-    # patch for zigbee config display
-    #cp ${current_dir}/websocket_api.py /srv/homeassistant/lib/python3.13/site-packages/homeassistant/components/zha/websocket_api.py
-
     deactivate
 fi
 
 #/srv/matter_server/bin/matter-server
+# https://github.com/home-assistant-libs/python-matter-server/releases
 if [ ! -e "${matter_server_path}/bin/matter-server" ]; then
     print_info "[2]Building python matter-server venv for hacore_${version}.deb ..."
     mkdir -p ${matter_server_path}
