@@ -8,12 +8,12 @@
 if gpioget 0 27; then
     /usr/bin/systemctl start otbr-agent || true
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor thread enabled
+        /usr/local/bin/supervisor thread enabled || true
     fi    
 else
     /usr/bin/systemctl disable otbr-agent || true
     /usr/bin/systemctl stop otbr-agent || true
     if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor thread disabled
+        /usr/local/bin/supervisor thread disabled || true
     fi    
 fi

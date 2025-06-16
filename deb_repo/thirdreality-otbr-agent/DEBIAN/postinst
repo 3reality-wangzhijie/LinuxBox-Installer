@@ -127,7 +127,7 @@ if [ "$1" = "configure" ]; then
 		/usr/bin/systemctl start otbr-agent || true
 		
 		if [ -e "/usr/local/bin/supervisor" ]; then
-			/usr/local/bin/supervisor thread enable
+			/usr/local/bin/supervisor thread enabled || true
 		fi
 
 		# 如果Home Assistant正在运行，需要停止服务，然后更新配置，再恢复服务
@@ -151,6 +151,6 @@ if [ "$1" = "configure" ]; then
         /usr/bin/systemctl stop otbr-agent || true
     fi
 
-	info "Install OTBR-Agent success."
+	echo "Install OTBR-Agent success."
 fi
 
