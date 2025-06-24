@@ -29,10 +29,10 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # 全局定义版本号
-export HOME_ASSISTANT_VERSION="2025.6.0"
+export HOME_ASSISTANT_VERSION="2025.6.2"
 
 #home-assistant-frontend==20250509.0
-export FRONTEND_VERSION="20250531.2" 
+export FRONTEND_VERSION="20250531.3" 
 
 #python-matter-server==7.0.0
 export MATTER_SERVER_VERSION="8.0.0"
