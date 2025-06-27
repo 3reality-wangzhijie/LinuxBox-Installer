@@ -32,6 +32,8 @@ on_exit() {
         /usr/local/bin/supervisor led sys_event_off  || true
     fi
 
+    echo "System finished to install deb packages. " | wall
+
     if [ "$exit_code" -ne 0 ]; then
       echo "An error occurred during the execution of the script. Exit code $exit_code"
     fi
@@ -134,6 +136,9 @@ install_deb_if_needed() {
     local deb_version
 
     echo "+ ${deb_file}. " | wall
+    if [ -e "/usr/local/bin/supervisor" ]; then
+        /usr/local/bin/supervisor led sys_firmware_updating  || true
+    fi    
 
     current_version=$(dpkg-query -W -f='${Version}\n' "${package_name}" 2>/dev/null || true)    
     if [ -n "$current_version" ]; then
@@ -144,12 +149,20 @@ install_deb_if_needed() {
         if dpkg --compare-versions "$deb_version" gt "$current_version"; then
             echo "A newer version is available. Installing: ${deb_file}"
             dpkg_install "$deb_file"
+
+            if [ -e "/usr/local/bin/supervisor" ]; then
+                /usr/local/bin/supervisor setting updated  || true
+            fi            
         else
             echo "Installed version is up-to-date. No installation needed."
         fi
     else
         echo "${package_name} is not installed or version not available. Installing: ${deb_file}"
         dpkg_install "$deb_file"
+
+        if [ -e "/usr/local/bin/supervisor" ]; then
+            /usr/local/bin/supervisor setting updated  || true
+        fi            
     fi
 }
 
@@ -230,10 +243,6 @@ install_core_matter_debs() {
         echo "No otbr-agent deb file found in $WORK_DIR" >&2
     fi
 
-    if [ -e "/usr/local/bin/supervisor" ]; then
-        /usr/local/bin/supervisor ota update  || true
-    fi
-
     return 0
 }
 
@@ -246,11 +255,21 @@ install_zigbee2mqtt_debs() {
         zigbee_mqtt_deb_file=$(find "$WORK_DIR" -maxdepth 1 -name "zigbee-mqtt_*.deb" -type f | head -n 1)
         if [ -n "$zigbee_mqtt_deb_file" ]; then
 
+            if [ -e "/usr/local/bin/supervisor" ]; then
+                /usr/local/bin/supervisor led sys_firmware_updating  || true
+            fi
+
+            echo "+ ${zigbee_mqtt_deb_file}. " | wall
             echo "Installing: $zigbee_mqtt_deb_file"
+
             if ! DEBIAN_FRONTEND=noninteractive dpkg -i "$zigbee_mqtt_deb_file"; then
                 echo "Warning: Failed to install $zigbee_mqtt_deb_file" >&2
             else
                 apt-mark manual "thirdreality-zigbee-mqtt" || echo "Warning: Failed to mark thirdreality-zigbee-mqtt as manual" >&2
+
+                if [ -e "/usr/local/bin/supervisor" ]; then
+                    /usr/local/bin/supervisor setting updated  || true
+                fi
 
                 # If installation is successful, install dependencies
                 if [ -e "/usr/lib/thirdreality/post-install-zigbee2mqtt.sh" ]; then
@@ -271,7 +290,11 @@ install_zigbee2mqtt_debs() {
             echo "Warning: Failed to install $zigbee_mqtt_deb_file" >&2
         else
             apt-mark manual "thirdreality-zigbee-mqtt" || echo "Warning: Failed to mark thirdreality-zigbee-mqtt as manual" >&2
-                
+        
+            if [ -e "/usr/local/bin/supervisor" ]; then
+                /usr/local/bin/supervisor setting updated  || true
+            fi         
+
             # If installation is successful, install dependencies
             if [ -e "/usr/lib/thirdreality/post-install-zigbee2mqtt.sh" ]; then
                 /usr/lib/thirdreality/post-install-zigbee2mqtt.sh > /dev/null || true
@@ -431,10 +454,18 @@ main_procedure()
     if [ -e "/usr/local/bin/supervisor" ]; then
         /usr/local/bin/supervisor led sys_event_off || true
     fi
+
+    # Auto restore functionality
+    if [ -d "/mnt/3RBackup" ] && [ -e "/usr/local/bin/supervisor" ]; then
+        setting_files=$(find "/mnt/3RBackup" -maxdepth 1 -name "setting_*.tar.gz" -type f 2>/dev/null || true)
+        if [ -n "$setting_files" ]; then
+            echo "Found backup settings, attempting to restore..."
+            /usr/local/bin/supervisor setting restore || true
+        fi
+    fi
 }
 
 
 main_procedure
 
 exit 0
-

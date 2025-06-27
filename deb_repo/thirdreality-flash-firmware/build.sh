@@ -72,6 +72,19 @@ fi
 if [ -f "${current_dir}/upgrade_firmware.sh" ]; then
     cp ${current_dir}/upgrade_firmware.sh ${output_dir}/lib/firmware/bl706/
     chmod +x ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+
+    # Check if zigbee firmware exists and modify upgrade_firmware.sh accordingly
+    if [ ! -f "${current_dir}/partition_1m_images/zigbee_whole_img.bin" ]; then
+        # Comment out zigbee function call if firmware doesn't exist
+        sed -i 's/^flash_zigbee$/#flash_zigbee/' ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+    fi
+
+    # Check if thread firmware exists and modify upgrade_firmware.sh accordingly
+    if [ ! -f "${current_dir}/partition_1m_images/thread_whole_img.bin" ]; then
+        # Comment out thread function call if firmware doesn't exist
+        sed -i 's/^flash_thread$/#flash_thread/' ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+    fi
+
 fi
 
 print_info "Start to build flash_firmware_${version}.deb ..."
@@ -81,6 +94,8 @@ dpkg-deb --build ${output_dir} ${current_dir}/flash_firmware_${version}.deb
 rm -rf ${output_dir}/usr/
 
 print_info "Build flash_firmware_${version}.deb finished ..."
+
+
 
 
 
