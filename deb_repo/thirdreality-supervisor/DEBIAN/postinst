@@ -24,6 +24,12 @@ if [ "$1" = "configure" ]; then
         /usr/bin/systemctl start supervisor.service
 	fi
 
+	if [ -f "/etc/systemd/system/btgatt-config.service" ]; then
+		/usr/bin/systemctl disable btgatt-config.service
+	fi
+
+	/usr/bin/systemctl daemon-reload > /dev/null 2>&1
+
 	info "Install success."
 fi
 

@@ -35,6 +35,7 @@ if [[ "$CLEAN" == true ]]; then
     rm -rf /usr/local/lib/python3.11/dist-packages/supervisor > /dev/null 2>&1
     rm -rf /usr/local/bin/supervisor > /dev/null 2>&1
     rm -rf /etc/systemd/system/supervisor.service > /dev/null 2>&1
+    rm -rf /etc/systemd/system/btgatt-config.service > /dev/null 2>&1
 
     systemctl daemon-reload > /dev/null 2>&1
     exit 0
@@ -78,7 +79,11 @@ cp -r "${supervised_dir}/supervisor" "${output_dir}/usr/local/lib/python3.11/dis
 cp "${supervised_dir}/bin/supervisor" "${output_dir}/usr/local/bin/"
 chmod +x "${output_dir}/usr/local/bin/supervisor"
 
+cp "${supervised_dir}/bin/btgatt-config-server" "${output_dir}/usr/local/bin/"
+chmod +x "${output_dir}/usr/local/bin/btgatt-config-server"
+
 cp "${supervised_dir}/supervisor.service" "${output_dir}/etc/systemd/system/"
+cp "${supervised_dir}/btgatt-config.service" "${output_dir}/etc/systemd/system/"
 
 if [ -f "${current_dir}/factory-reset.sh" ]; then
     cp "${current_dir}/factory-reset.sh" "${output_dir}/lib/armbian/"
