@@ -1,22 +1,22 @@
 {
   "channel": "stable",
   "homeassistant": {
-    "version": "2025.5.3",
+    "version": "2025.6.2",
     "python3": {
       "version": "3.13.3",
       "release": "2025.4.3"
     },
     "hacore": {
-      "version": "2025.5.3",
-      "release": "2025.5.3"
+      "version": "2025.6.2",
+      "release": "2025.6.2"
     },
     "hacore-config": {
-      "version": "2025.5.3",
-      "release": "2025.5.3"
+      "version": "2025.6.0",
+      "release": "2025.6.0"
     },
     "otbr-agent": {
-      "version": "2025.05.29",
-      "release": "2025.5.3"
+      "version": "2025.06.24",
+      "release": "2025.6.2"
     },
     "zigbee-mqtt": {
       "version": "2.3.0",
