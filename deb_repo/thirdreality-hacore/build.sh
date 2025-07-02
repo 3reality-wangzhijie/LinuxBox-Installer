@@ -168,8 +168,46 @@ if [ ! -e "${home_assistant_path}/bin/hass" ]; then
     # homeassistant.components.thread
     python3 -m pip install python-otbr-api==2.7.0 pyroute2==0.7.5
 
-    python3 -m pip install zigpy-cli==1.1.0
+    # homeassistant.components.zha
+    python3 -m pip install zigpy-cli==1.1.0 zha==0.0.60
+
+    cd ${home_assistant_path}/lib64/python3.13/site-packages; python3 -m pip install git+https://github.com/bouffalolab/zigpy-blz/@dev
     
+    # Apply patches
+    print_info "Applying patches..."
+    
+    # Apply zha.patch
+    if [ -f "${current_dir}/zha.patch" ]; then
+        print_info "Applying zha.patch to const.py..."
+        if [ -f "${home_assistant_path}/lib64/python3.13/site-packages/zha/application/const.py" ]; then
+            if patch ${home_assistant_path}/lib64/python3.13/site-packages/zha/application/const.py < "${current_dir}/zha.patch"; then
+                print_info "zha.patch applied successfully"
+            else
+                print_error "Failed to apply zha.patch, continuing without patch"
+            fi
+        else
+            print_error "Target file const.py not found, skipping zha.patch"
+        fi
+    else
+        print_info "zha.patch not found in ${current_dir}, skipping"
+    fi
+    
+    # Apply zigpy_cli.patch
+    if [ -f "${current_dir}/zigpy_cli.patch" ]; then
+        print_info "Applying zigpy_cli.patch to zigpy_cli..."
+        if [ -f "${home_assistant_path}/lib64/python3.13/site-packages/zigpy_cli/const.py" ]; then
+            if patch ${home_assistant_path}/lib64/python3.13/site-packages/zigpy_cli/const.py < "${current_dir}/zigpy_cli.patch"; then
+                print_info "zigpy_cli.patch applied successfully"
+            else
+                print_error "Failed to apply zigpy_cli.patch, continuing without patch"
+            fi
+        else
+            print_error "Target directory zigpy_cli not found, skipping zigpy_cli.patch"
+        fi
+    else
+        print_info "zigpy_cli.patch not found in ${current_dir}, skipping"
+    fi
+
     deactivate
 fi
 

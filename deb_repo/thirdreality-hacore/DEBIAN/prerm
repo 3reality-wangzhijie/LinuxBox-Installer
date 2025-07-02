@@ -3,11 +3,11 @@ set -e
 
 # 停止服务
 if [ "$1" = "remove" ]; then
-	rm -rf /usr/share/hassio/homeassistant/zha.conf
-	rm -rf /usr/share/hassio/homeassistant/zha.conf.bak
+	rm -rf /usr/share/hassio/homeassistant/zha.conf || true
+	rm -rf /usr/share/hassio/homeassistant/zha.conf.bak || true
 
-	rm -rf /var/lib/homeassistant/homeassistant/zha.conf
-	rm -rf /var/lib/homeassistant/homeassistant/zha.conf.bak
+	rm -rf /var/lib/homeassistant/homeassistant/zha.conf || true
+	rm -rf /var/lib/homeassistant/homeassistant/zha.conf.bak || true
 
     if [ -f "/lib/systemd/system/home-assistant.service" ]; then
         systemctl stop home-assistant.service

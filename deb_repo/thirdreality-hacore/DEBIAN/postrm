@@ -3,9 +3,18 @@ set -e
 
 # 停止服务
 if [ "$1" = "remove" ]; then
-    rm -rf /tmp/chip_kvs
-    rm -rf /srv/homeassistant
-    rm -rf /srv
+
+    if [ -f "/var/lib/homeassistant/zha.conf" ]; then
+        rm -rf /var/lib/homeassistant/zha.conf || true
+    fi
+
+    if [ -f "/var/lib/homeassistant/zha.conf.bak" ]; then
+        rm -rf /var/lib/homeassistant/zha.conf.bak || true
+    fi
+    
+    rm -rf /tmp/chip_kvs || true
+    rm -rf /srv/homeassistant || true
+    rm -rf /srv || true
 fi
 
 exit 0

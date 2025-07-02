@@ -20,7 +20,7 @@ if [ "$1" = "configure" ]; then
     chmod 777 /data /updates
     touch /tmp/chip_kvs && chmod 766 /tmp/chip_kvs || { echo "[WARN]Failed to setup directories"; }	
 
-	if [ -e "/srv/homeassistant/bin/home_assistant_helper.sh" ]; then
+	if [ -e "/srv/homeassistant/bin/home_assistant_boot_check.sh" ]; then
 		chmod +x /srv/homeassistant/bin/home_assistant_boot_check.sh > /dev/null 2>&1
 	fi
 

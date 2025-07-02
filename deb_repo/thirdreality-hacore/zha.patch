@@ -1,0 +1,21 @@
+--- ./zha-0.0.60/zha/application/const.py	2025-06-13 18:12:56.000000000 +0000
++++ /srv/homeassistant/lib/python3.13/site-packages/zha/application/const.py	2025-07-01 07:36:59.449565621 +0000
+@@ -12,6 +12,7 @@
+ import zigpy_xbee.zigbee.application
+ import zigpy_zigate.zigbee.application
+ import zigpy_znp.zigbee.application
++import zigpy_blz.zigbee.application
+ 
+ ATTR_ACTIVE_COORDINATOR = "active_coordinator"
+ ATTR_ARGS = "args"
+@@ -122,6 +123,10 @@
+         "XBee = Digi XBee Zigbee radios: Digi XBee Series 2, 2C, 3",
+         zigpy_xbee.zigbee.application.ControllerApplication,
+     )
++    blz = (
++        "BLZ = Bouffalo Lab Zigbee radios: BL702/4/6",
++        zigpy_blz.zigbee.application.ControllerApplication,
++    )
+ 
+     @classmethod
+     def list(cls) -> list[str]:

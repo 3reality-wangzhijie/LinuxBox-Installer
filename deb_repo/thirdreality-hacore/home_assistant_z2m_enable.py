@@ -3,6 +3,8 @@
 
 # home_assistant_z2m_enable.py
 
+# deprecated, Do not use this script
+
 import os
 import re
 import json

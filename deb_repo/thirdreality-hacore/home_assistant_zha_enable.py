@@ -59,6 +59,31 @@ def check_and_stop_ha_service():
     
     return need_restart
 
+def find_zigbee_coordinator(devices):
+    """查找 Zigbee Coordinator 设备"""
+    coordinators = []
+    
+    for device in devices:
+        # 检查是否有 zigbee 连接
+        has_zigbee_connection = any(
+            conn[0] == "zigbee" 
+            for conn in device.get("connections", [])
+        )
+        
+        # Coordinator 的 via_device_id 为 null
+        is_root_device = device.get("via_device_id") is None
+        
+        # 检查是否为 ZHA 标识符
+        has_zha_identifier = any(
+            identifier[0] == "zha" 
+            for identifier in device.get("identifiers", [])
+        )
+        
+        if has_zigbee_connection and is_root_device and has_zha_identifier:
+            coordinators.append(device)
+    
+    return coordinators
+
 def update_config_entries(radio_type="zigate"):
     config_entries_path = os.path.join(BASE_PATH, "homeassistant/.storage/core.config_entries")
     mqtt_entry_id = None
@@ -103,33 +128,64 @@ def update_config_entries(radio_type="zigate"):
         # Format similar to: 01JWJ0ZAEC9C8YN1BVYW4SFW3G
         zha_entry_id = f"01{uuid.uuid4().hex.upper()[:24]}"
         now = datetime.now(timezone.utc).isoformat()
-        zha_entry = {
-            "created_at": now,
-            "data": {
-                "device": {
-                    "baudrate": 115200,
-                    "flow_control": None,
-                    "path": "/dev/ttyAML3"
+        
+        if radio_type == "zigate":
+            zha_entry = {
+                "created_at": now,
+                "data": {
+                    "device": {
+                        "baudrate": 115200,
+                        "flow_control": None,
+                        "path": "/dev/ttyAML3"
+                    },
+                    "radio_type": radio_type
                 },
-                "radio_type": radio_type
-            },
-            "disabled_by": None,
-            "discovery_keys": {},
-            "domain": "zha",
-            "entry_id": zha_entry_id,
-            "minor_version": 1,
-            "modified_at": now,
-            "options": {},
-            "pref_disable_new_entities": False,
-            "pref_disable_polling": False,
-            "source": "user",
-            "subentries": [],
-            "title": "/dev/ttyAML3",
-            "unique_id": None,
-            "version": 4
-        }
+                "disabled_by": None,
+                "discovery_keys": {},
+                "domain": "zha",
+                "entry_id": zha_entry_id,
+                "minor_version": 1,
+                "modified_at": now,
+                "options": {},
+                "pref_disable_new_entities": False,
+                "pref_disable_polling": False,
+                "source": "user",
+                "subentries": [],
+                "title": "/dev/ttyAML3",
+                "unique_id": None,
+                "version": 4
+            }
+        elif radio_type == "blz":
+            zha_entry = {
+                "created_at": now,
+                "data": {
+                    "device": {
+                        "baudrate": 2000000,
+                        "flow_control": None,
+                        "path": "/dev/ttyAML3"
+                    },
+                    "radio_type": radio_type
+                },
+                "disabled_by": None,
+                "discovery_keys": {},
+                "domain": "zha",
+                "entry_id": zha_entry_id,
+                "minor_version": 1,
+                "modified_at": now,
+                "options": {},
+                "pref_disable_new_entities": False,
+                "pref_disable_polling": False,
+                "source": "user",
+                "subentries": [],
+                "title": "/dev/ttyAML3",
+                "unique_id": None,
+                "version": 4
+            }
+        else:
+            raise ConfigError(f"Unsupported radio_type: {radio_type}")
+            
         new_entries.append(zha_entry)
-        print(f"Added ZHA configuration with entry_id: {zha_entry_id}")
+        print(f"Added ZHA configuration with entry_id: {zha_entry_id} for radio_type: {radio_type}")
     
     # Update entries
     config_data['data']['entries'] = new_entries
@@ -144,7 +200,7 @@ def update_config_entries(radio_type="zigate"):
     
     return mqtt_entry_id, zha_entry_id
 
-def update_device_registry(mqtt_entry_id, zha_entry_id, ieee):
+def update_device_registry(mqtt_entry_id, zha_entry_id, ieee, radio_type):
     device_registry_path = os.path.join(BASE_PATH, "homeassistant/.storage/core.device_registry")
     
     if not os.path.exists(device_registry_path):
@@ -171,47 +227,71 @@ def update_device_registry(mqtt_entry_id, zha_entry_id, ieee):
                 print(f"Removing device linked to MQTT: [{device.get('name', 'Unknown device')}]")
                 continue
         new_devices.append(device)
+    
+    # Check if ZHA coordinator device already exists
+    coordinators = find_zigbee_coordinator(new_devices)
+    has_zha_coordinator = len(coordinators) > 0
+    
+    if has_zha_coordinator:
+        print("ZHA coordinator device already exists in registry")
     else:
-        new_devices = devices
-    
-    # Check if ZiGate USB-TTL device already exists
-    has_zigate = False
-    for device in new_devices:
-        if device.get('model') == 'ZiGate USB-TTL' and device.get('manufacturer') == 'ZiGate':
-            has_zigate = True
-            print("ZiGate device already exists in registry")
-            break
-    
-    # If no ZiGate device exists, add one
-    if not has_zigate:
         now = datetime.now(timezone.utc).isoformat()
         # Use the zha_entry_id obtained from update_config_entries
-        zigate_device = {
-            "area_id": None,
-            "config_entries": [zha_entry_id],
-            "config_entries_subentries": {zha_entry_id: [None]},
-            "configuration_url": None,
-            "connections": [["zigbee", ieee]],
-            "created_at": now,
-            "disabled_by": None,
-            "entry_type": None,
-            "hw_version": None,
-            "id": "af41f395068280b4b3c76734dd1444f3",
-            "identifiers": [["zha", ieee]],
-            "labels": [],
-            "manufacturer": "ZiGate",
-            "model": "ZiGate USB-TTL",
-            "model_id": None,
-            "modified_at": now,
-            "name_by_user": None,
-            "name": "ZiGate ZiGate USB-TTL",
-            "primary_config_entry": zha_entry_id,
-            "serial_number": None,
-            "sw_version": "3.21",
-            "via_device_id": None
-        }
-        new_devices.append(zigate_device)
-        print(f"Added ZiGate device with ZHA entry_id: {zha_entry_id}")
+        if radio_type == "zigate":
+            coordinator_device = {
+                "area_id": None,
+                "config_entries": [zha_entry_id],
+                "config_entries_subentries": {zha_entry_id: [None]},
+                "configuration_url": None,
+                "connections": [["zigbee", ieee]],
+                "created_at": now,
+                "disabled_by": None,
+                "entry_type": None,
+                "hw_version": None,
+                "id": "af41f395068280b4b3c76734dd1444f3",
+                "identifiers": [["zha", ieee]],
+                "labels": [],
+                "manufacturer": "ZiGate",
+                "model": "ZiGate USB-TTL",
+                "model_id": None,
+                "modified_at": now,
+                "name_by_user": None,
+                "name": "ZiGate ZiGate USB-TTL",
+                "primary_config_entry": zha_entry_id,
+                "serial_number": None,
+                "sw_version": "3.21",
+                "via_device_id": None
+            }
+        elif radio_type == "blz":
+            coordinator_device = {
+                "area_id": None,
+                "config_entries": [zha_entry_id],
+                "config_entries_subentries": {zha_entry_id: [None]},
+                "configuration_url": None,
+                "connections": [["zigbee", ieee]],
+                "created_at": now,
+                "disabled_by": None,
+                "entry_type": None,
+                "hw_version": None,
+                "id": "af41f395068280b4b3c76734dd1444f3",
+                "identifiers": [["zha", ieee]],
+                "labels": [],
+                "manufacturer": "Bouffalo Lab",
+                "model": "BL706",
+                "model_id": None,
+                "modified_at": now,
+                "name_by_user": None,
+                "name": "Bouffalo Lab BL706",
+                "primary_config_entry": zha_entry_id,
+                "serial_number": None,
+                "sw_version": "0x00000000",
+                "via_device_id": None
+            }
+        else:
+            raise ConfigError(f"Unsupported radio_type: {radio_type}")
+            
+        new_devices.append(coordinator_device)
+        print(f"Added {radio_type} coordinator device with ZHA entry_id: {zha_entry_id}")
     
     # 更新devices
     device_data['data']['devices'] = new_devices
@@ -325,10 +405,15 @@ def main():
         mqtt_entry_id, zha_entry_id = update_config_entries(radio_type)
         
         # Step 4: Update device_registry
-        update_device_registry(mqtt_entry_id, zha_entry_id, ieee)
+        update_device_registry(mqtt_entry_id, zha_entry_id, ieee, radio_type)
         
         # Step 5: Update entity registry
         update_entity_registry()
+        
+        # Sync filesystem to ensure all changes are written to disk
+        print("Syncing filesystem...")
+        for _ in range(3):
+            os.system('sync')
         
         success = True
         print("ZHA configuration completed successfully")

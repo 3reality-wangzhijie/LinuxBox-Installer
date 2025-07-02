@@ -28,6 +28,9 @@ def check_device_file(file_path):
     dev_file.write(json.dumps(body, indent=2))
     dev_file.close()
 
+    for _ in range(3):
+        os.system('sync')
+
     print(file_path + " validate success")
     return
 
@@ -49,6 +52,9 @@ def check_entity_file(file_path):
     entity_file.write(json.dumps(body, indent=2))
     entity_file.close()
 
+    for _ in range(3):
+        os.system('sync')
+
     print(file_path + " validate success")
     return
 
@@ -64,3 +70,6 @@ def main_run(dir):
     check_entity_file(entity_file)
 
     return
+
+if __name__ == "__main__":
+    main_run(args.home)
