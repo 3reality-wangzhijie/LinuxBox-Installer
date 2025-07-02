@@ -26,7 +26,6 @@ install_packages() {
     
     # Define packages in the original installation order
     local PACKAGES=(
-        "libcjson1_*.deb"
         "libdlt2_*.deb"
         "libmosquitto1_*.deb"
         "mosquitto-clients_*.deb"

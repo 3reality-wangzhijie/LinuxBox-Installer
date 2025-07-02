@@ -31,6 +31,8 @@ if [ "$1" = "configure" ]; then
 	/usr/bin/systemctl daemon-reload > /dev/null 2>&1
 
 	info "Install success."
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0

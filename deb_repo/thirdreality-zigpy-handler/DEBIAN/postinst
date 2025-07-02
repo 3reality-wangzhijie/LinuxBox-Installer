@@ -4,6 +4,8 @@ set -e
 # 检查是安装还是升级
 if [ "$1" = "configure" ]; then
 
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0

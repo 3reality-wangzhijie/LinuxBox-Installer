@@ -54,6 +54,8 @@ if [ "$1" = "configure" ]; then
 	fi
 	
 	info "Install HomeAssistant-Core success."
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0

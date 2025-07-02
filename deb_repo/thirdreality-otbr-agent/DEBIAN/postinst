@@ -177,5 +177,9 @@ if [ "$1" = "configure" ]; then
     # fi
 
 	echo "Install OTBR-Agent success."
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
+
+exit 0
 

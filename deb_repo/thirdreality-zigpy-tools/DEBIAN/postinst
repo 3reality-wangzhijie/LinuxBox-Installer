@@ -6,6 +6,8 @@ if [ "$1" = "configure" ]; then
 	if [ -f "/usr/local/bin/zigpy_help.sh" ]; then
 		chmod +x /usr/local/bin/zigpy_help.sh
 	fi
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0

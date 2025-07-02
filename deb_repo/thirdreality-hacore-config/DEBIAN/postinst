@@ -26,6 +26,8 @@ if [ "$1" = "configure" ]; then
 			echo "Warn: Script $SCRIPT_PATH not found."
 		fi
 	fi
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0

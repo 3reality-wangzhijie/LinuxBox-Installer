@@ -13,7 +13,9 @@ if [ "$1" = "configure" ]; then
 
     if [ -f "/usr/lib/firmware/bl706/upgrade_firmware.sh" ]; then
         chmod +x /usr/lib/firmware/bl706/upgrade_firmware.sh
-    fi    
+    fi
+elif [ "$1" = "fix-dependency" ]; then
+    echo "fix-dependency"
 fi
 
 exit 0
