@@ -24,6 +24,10 @@ if [ "$1" = "configure" ]; then
 		chmod +x /srv/homeassistant/bin/home_assistant_boot_check.sh > /dev/null 2>&1
 	fi
 
+	if [ -e "/srv/homeassistant/bin/home_assistant_blz_reset.sh" ]; then
+		chmod +x /srv/homeassistant/bin/home_assistant_blz_reset.sh > /dev/null 2>&1
+	fi
+
 	if [ -e "/srv/homeassistant/bin/home_assistant_zha_enable.py" ]; then
 		chmod +x /srv/homeassistant/bin/home_assistant_zha_enable.py > /dev/null 2>&1
 	fi
