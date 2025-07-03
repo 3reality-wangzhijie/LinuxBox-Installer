@@ -65,8 +65,34 @@ configure_mosquitto() {
 }
 
 configure_zigbee2mqtt() {
-    if [ ! -f "$THIRDREALITY_CONF/configuration.yaml.default" ]; then
-        echo "WARNING: Default zigbee2mqtt configuration not found"
+    # Determine configuration file based on zha.conf radio type
+    local config_file=""
+    local zha_conf="/var/lib/homeassistant/zha.conf"
+    
+    if [ -f "$zha_conf" ]; then
+        # Read the last line to get Radio Type
+        local radio_type=$(tail -n 1 "$zha_conf" | grep -o "Radio Type: [^[:space:]]*" | cut -d' ' -f3)
+        
+        if [ "$radio_type" = "blz" ]; then
+            config_file="$THIRDREALITY_CONF/configuration_blz.yaml.default"
+            echo "Detected Radio Type: blz, using configuration_blz.yaml.default"
+        elif [ "$radio_type" = "zigate" ]; then
+            config_file="$THIRDREALITY_CONF/configuration_zigate.yaml.default"
+            echo "Detected Radio Type: zigate, using configuration_zigate.yaml.default"
+        else
+            # Default to blz if radio type is not recognized
+            config_file="$THIRDREALITY_CONF/configuration_blz.yaml.default"
+            echo "Unknown Radio Type: $radio_type, defaulting to configuration_blz.yaml.default"
+        fi
+    else
+        # Default to blz if zha.conf doesn't exist
+        config_file="$THIRDREALITY_CONF/configuration_blz.yaml.default"
+        echo "zha.conf not found, defaulting to configuration_blz.yaml.default"
+    fi
+    
+    # Check if the determined config file exists
+    if [ ! -f "$config_file" ]; then
+        echo "WARNING: Configuration file not found: $config_file"
         return
     fi
     
@@ -75,8 +101,8 @@ configure_zigbee2mqtt() {
         mkdir -p "$ZIGBEE2MQTT_DIR"
     fi
     
-    echo "Installing zigbee2mqtt configuration"
-    cp "$THIRDREALITY_CONF/configuration.yaml.default" "$ZIGBEE2MQTT_DIR/configuration.yaml"
+    echo "Installing zigbee2mqtt configuration from $config_file"
+    cp "$config_file" "$ZIGBEE2MQTT_DIR/configuration.yaml"
 
     if [ -f "/usr/lib/node_modules/pnpm/bin/pnpm.cjs" ]; then
         ln -snf /usr/lib/node_modules/pnpm/bin/pnpm.cjs /usr/bin/pnpm

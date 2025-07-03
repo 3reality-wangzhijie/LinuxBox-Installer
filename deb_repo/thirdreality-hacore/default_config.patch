@@ -1,0 +1,10 @@
+--- homeassistant/components/default_config/manifest.json	2025-07-03 07:31:36.908971972 +0000
++++ /srv/homeassistant/lib/python3.13/site-packages/homeassistant/components/default_config/manifest.json	2025-07-03 07:32:30.730079136 +0000
+@@ -4,7 +4,6 @@
+   "codeowners": ["@home-assistant/core"],
+   "dependencies": [
+     "assist_pipeline",
+-    "bluetooth",
+     "cloud",
+     "conversation",
+     "dhcp",

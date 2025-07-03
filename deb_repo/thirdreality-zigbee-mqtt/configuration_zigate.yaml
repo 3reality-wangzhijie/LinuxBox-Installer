@@ -7,6 +7,7 @@ mqtt:
 serial:
   port: /dev/ttyAML3
   adapter: zigate
+  baudrate: 115200
 advanced:
   log_level: warning
   channel: 15

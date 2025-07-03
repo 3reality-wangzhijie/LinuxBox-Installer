@@ -31,6 +31,9 @@ print_info "Version: $version"
 
 #清场
 if [[ "$CLEAN" == true ]]; then
+    rm -rf /opt/zigbee2mqtt > /dev/null 2>&1
+    rm -rf /opt/zigbee-herdsman > /dev/null 2>&1
+
     rm -rf "${output_dir}" > /dev/null 2>&1
     rm -rf ${current_dir}/*.deb > /dev/null 2>&1
 
@@ -89,12 +92,25 @@ print_info "npm version should output 9.X or 10.X, current: \e[1;31m $(npm --ver
 if [ ! -d "/opt/zigbee2mqtt" ]; then
     cp ${current_dir}/zigbee2mqtt.service /etc/systemd/system/zigbee2mqtt.service
 
-    mkdir /opt/zigbee2mqtt
-    git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
+    print_info "Build zigbee-herdsman ..."
+    mkdir -p /opt/zigbee-herdsman
+    git clone -b feat/blz https://github.com/fangzheli/zigbee-herdsman.git /opt/zigbee-herdsman
+    cd /opt/zigbee-herdsman
+    #pnpm i --frozen-lockfile
+    pnpm install && pnpm run build
+
+
+    print_info "Build zigbee2mqtt ..."
+    mkdir -p /opt/zigbee2mqtt
+    #git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
+    git clone -b feat/blz-local-dev https://github.com/fangzheli/zigbee2mqtt.git /opt/zigbee2mqtt
     cd /opt/zigbee2mqtt
+    pnpm install && pnpm run build
     #npm ci
-    pnpm i --frozen-lockfile
-    cp ${current_dir}/configuration.yaml /opt/zigbee2mqtt/data/configuration.yaml
+    #pnpm i --frozen-lockfile
+
+    cp ${current_dir}/configuration_zigate.yaml /opt/zigbee2mqtt/data/configuration_zigate.yaml
+    cp ${current_dir}/configuration_blz.yaml /opt/zigbee2mqtt/data/configuration_blz.yaml
     #npm run build
 fi
 
@@ -125,9 +141,15 @@ print_info "Backup zigbee2mqtt ..."
 mkdir -p ${output_dir}/opt/zigbee2mqtt
 cp /opt/zigbee2mqtt ${output_dir}/opt/ -R
 
-rm -rf ${output_dir}/opt/zigbee2mqtt/data/database.db
-rm -rf ${output_dir}/opt/zigbee2mqtt/data/log
-rm -rf ${output_dir}/opt/zigbee2mqtt/data/state.json
+mkdir -p ${output_dir}/opt/zigbee-herdsman
+cp /opt/zigbee-herdsman ${output_dir}/opt/ -R
+
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/database.db || true
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/log || true
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/state.json || true
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/configuration.yaml || true
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/configuration_blz.yaml || true
+rm -rf ${output_dir}/opt/zigbee2mqtt/data/configuration_zigate.yaml || true
 
 mkdir -p ${output_dir}/usr/lib/node_modules
 #cp /lib/node_modules/corepack ${output_dir}/lib/node_modules/ -R
@@ -139,7 +161,9 @@ cp /etc/systemd/system/zigbee2mqtt.service ${output_dir}/etc/systemd/system/zigb
 
 #
 print_info "backup default config files..."
-cp ${current_dir}/configuration.yaml ${output_dir}/lib/thirdreality/conf/configuration.yaml.default
+cp ${current_dir}/configuration_zigate.yaml ${output_dir}/lib/thirdreality/conf/configuration_zigate.yaml.default
+cp ${current_dir}/configuration_blz.yaml ${output_dir}/lib/thirdreality/conf/configuration_blz.yaml.default
+
 cp ${current_dir}/mosquitto.conf ${output_dir}/lib/thirdreality/conf/mosquitto.conf.default
 
 # ---------------------
