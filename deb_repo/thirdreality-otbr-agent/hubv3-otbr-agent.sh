@@ -62,15 +62,16 @@ fi
 # Wait for otbr-agent to fully start and check for deprecated addresses
 echo "$(date): Waiting for otbr-agent to start and checking for deprecated addresses"
 sleep 5
-for i in {1..12}; do
-    if systemctl is-active --quiet otbr-agent && ip link show wpan0 &>/dev/null; then
-        if ip -6 addr show wpan0 | grep -q "deprecated"; then
-            echo "$(date): Deprecated addresses detected on wpan0"
-            fix_wpan_interface
-        else
-            echo "$(date): No deprecated addresses found on wpan0"
-        fi
-        break
-    fi
-    sleep 5
-done
+#for i in {1..12}; do
+#    if systemctl is-active --quiet otbr-agent && ip link show wpan0 &>/dev/null; then
+#        if ip -6 addr show wpan0 | grep -q "deprecated"; then
+#            echo "$(date): Deprecated addresses detected on wpan0"
+#            fix_wpan_interface
+#        else
+#            echo "$(date): No deprecated addresses found on wpan0"
+#        fi
+#        break
+#    fi
+#    sleep 5
+#done
+
