@@ -96,6 +96,7 @@ if [ ! -d "/opt/zigbee2mqtt" ]; then
     mkdir -p /opt/zigbee-herdsman
     git clone -b feat/blz https://github.com/fangzheli/zigbee-herdsman.git /opt/zigbee-herdsman
     cd /opt/zigbee-herdsman
+    rm -rf /opt/zigbee-herdsman/.git /opt/zigbee-herdsman/.github
     #pnpm i --frozen-lockfile
     pnpm install && pnpm run build
 
@@ -105,6 +106,7 @@ if [ ! -d "/opt/zigbee2mqtt" ]; then
     #git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
     git clone -b feat/blz-local-dev https://github.com/fangzheli/zigbee2mqtt.git /opt/zigbee2mqtt
     cd /opt/zigbee2mqtt
+    rm -rf /opt/zigbee2mqtt/.git /opt/zigbee2mqtt/.github
     pnpm install && pnpm run build
     #npm ci
     #pnpm i --frozen-lockfile
