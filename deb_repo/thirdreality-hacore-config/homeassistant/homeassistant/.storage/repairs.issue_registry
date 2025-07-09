@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "minor_version": 2,
+  "key": "repairs.issue_registry",
+  "data": {
+    "issues": [
+      {
+        "created": "2025-07-01T10:36:31.310395+00:00",
+        "dismissed_version": "2025.6.0",
+        "domain": "homeassistant",
+        "is_persistent": false,
+        "issue_id": "deprecated_method"
+      }
+    ]
+  }
+}

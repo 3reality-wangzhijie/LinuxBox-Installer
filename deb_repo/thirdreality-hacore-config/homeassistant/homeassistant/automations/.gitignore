@@ -1,0 +1,11 @@
+# Logs
+logs
+*.log
+
+# MacOS indexing file
+.DS_Store
+
+# IDE specific folders
+.idea
+.*.swp
+
