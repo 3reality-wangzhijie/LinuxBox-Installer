@@ -29,10 +29,10 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # 全局定义版本号
-export HOME_ASSISTANT_VERSION="2025.7.2"
+export HOME_ASSISTANT_VERSION="2025.6.3"
 
 #home-assistant-frontend==20250509.0
-export FRONTEND_VERSION="20250702.1" 
+export FRONTEND_VERSION="20250531.4" 
 
 #python-matter-server==7.0.0
 export MATTER_SERVER_VERSION="8.0.0"
@@ -151,25 +151,25 @@ if [ ! -e "${home_assistant_path}/bin/hass" ]; then
         stdlib-list==0.10.0 \
         pipdeptree==2.26.1 \
         tqdm==4.67.1 \
-        ruff==0.12.0 \
-        PyTurboJPEG==1.8.0 \
+        ruff==0.11.0 \
+        PyTurboJPEG==1.7.5 \
         go2rtc-client==0.2.1 \
         ha-ffmpeg==3.2.2 \
         hassil==2.2.3 \
-        home-assistant-intents==2025.6.23 \
+        home-assistant-intents==2025.6.10 \
         mutagen==1.47.0 \
         pymicro-vad==1.0.1 \
         pyspeex-noise==1.0.2
 
     # homeassistant.components.homeassistant_hardware
     # homeassistant.components.hardware
-    python3 -m pip install universal-silabs-flasher==0.0.31 ha-silabs-firmware-client==0.2.0 psutil-home-assistant==0.0.1
+    python3 -m pip install universal-silabs-flasher==0.0.30 ha-silabs-firmware-client==0.2.0 psutil-home-assistant==0.0.1
     
     # homeassistant.components.thread
     python3 -m pip install python-otbr-api==2.7.0 pyroute2==0.7.5
 
     # homeassistant.components.zha
-    python3 -m pip install zigpy-cli==1.1.0 zha==0.0.62
+    python3 -m pip install zigpy-cli==1.1.0 zha==0.0.60
 
     cd ${home_assistant_path}/lib64/python3.13/site-packages; python3 -m pip install git+https://github.com/bouffalolab/zigpy-blz/@dev
     

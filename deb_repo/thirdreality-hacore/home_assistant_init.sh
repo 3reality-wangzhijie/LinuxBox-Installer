@@ -4,25 +4,59 @@
 CONFIG_DIR="/var/lib/homeassistant"
 VENV_PATH="/srv/homeassistant/bin/activate"
 ZHA_CONF="${CONFIG_DIR}/zha.conf"
+ZIGPY_BACKUP_FILE="${CONFIG_DIR}/zigpy-backup.json"
 DEVICE_REGISTRY="/var/lib/homeassistant/homeassistant/.storage/core.device_registry"
+ZIGPY_CHANNEL=15
 
 # Function to execute zigpy command and retrieve IEEE address
 function get_zigpy_ieee_from_device {
     if [ ! -f "$ZHA_CONF" ]; then
-        # Execute zigpy command and save its output
         if [[ -e "/dev/ttyAML3" ]]; then
-            # This is HubV3
-            # First try ZiGate radio type
-            if zigpy radio zigate /dev/ttyAML3 info > "$ZHA_CONF" 2>&1; then
-                echo "ZiGate radio detected. Output saved to $ZHA_CONF"
-                echo "Radio Type: zigate" >> "$ZHA_CONF"
-            # If ZiGate fails, try BLZ radio type
-            elif zigpy radio --baudrate 2000000 blz /dev/ttyAML3 info > "$ZHA_CONF" 2>&1; then
+            local TMP_INFO="/tmp/zigpy_info.tmp"
+            echo "[INFO] Detecting Zigbee radio type..."
+            # Try BLZ first
+            if zigpy radio --baudrate 2000000 blz /dev/ttyAML3 info > "$TMP_INFO" 2>&1; then
+                echo "[INFO] BLZ radio detected, checking current channel..."
+                # 修正channel字段提取逻辑，确保能正确获取Channel值
+                local CHANNEL=$(grep -i '^channel:' "$TMP_INFO" | awk '{print $2}' | xargs)
+                if [ "$CHANNEL" != "$ZIGPY_CHANNEL" ]; then
+                    echo "[INFO] Current channel is $CHANNEL, switching to $ZIGPY_CHANNEL..."
+                    zigpy radio --baudrate 2000000 blz /dev/ttyAML3 change-channel --channel $ZIGPY_CHANNEL
+                    echo "[INFO] Channel switched, retrieving channel info again..."
+                    zigpy radio --baudrate 2000000 blz /dev/ttyAML3 info > "$TMP_INFO" 2>&1
+                    echo "[INFO] Channel switched, backuping configuration..."
+                    zigpy radio --baudrate 2000000 blz /dev/ttyAML3 backup $ZIGPY_BACKUP_FILE
+
+                    if [ -f "${CONFIG_DIR}/homeassistant/zigbee.db" ]; then
+                        rm -rf "${CONFIG_DIR}/homeassistant/zigbee.db"
+                    fi
+                fi
+                echo "[INFO] Detection complete, saving configuration..."
+                cat "$TMP_INFO" > "$ZHA_CONF"
                 echo "BLZ radio detected. Output saved to $ZHA_CONF"
                 echo "Radio Type: blz" >> "$ZHA_CONF"
+                rm -f "$TMP_INFO"
+                sync
+            elif zigpy radio zigate /dev/ttyAML3 info > "$TMP_INFO" 2>&1; then
+                echo "[INFO] ZiGate radio detected, checking current channel..."
+                # 修正channel字段提取逻辑，确保能正确获取Channel值
+                local CHANNEL=$(grep -i '^channel:' "$TMP_INFO" | awk '{print $2}' | xargs)
+                if [ "$CHANNEL" != "$ZIGPY_CHANNEL" ]; then
+                    echo "[INFO] Current channel is $CHANNEL, switching to $ZIGPY_CHANNEL..."
+                    zigpy radio zigate /dev/ttyAML3 change-channel --channel $ZIGPY_CHANNEL
+                    echo "[INFO] Channel switched, retrieving channel info again..."
+                    zigpy radio zigate /dev/ttyAML3 info > "$TMP_INFO" 2>&1
+                fi
+                echo "[INFO] Detection complete, saving configuration..."
+                cat "$TMP_INFO" > "$ZHA_CONF"
+                echo "ZiGate radio detected. Output saved to $ZHA_CONF"
+                echo "Radio Type: zigate" >> "$ZHA_CONF"
+                rm -f "$TMP_INFO"
+                sync
             else
                 echo "Error: Failed to detect any supported radio type"
                 rm -rf "$ZHA_CONF" > /dev/null 2>&1 || true
+                rm -f "$TMP_INFO"
                 return 1
             fi
         else
@@ -47,6 +81,7 @@ function enable_zha_for_home_assistant {
         fi
 
         /srv/homeassistant/bin/home_assistant_zha_enable.py
+        sync
     fi
 }
 
@@ -60,6 +95,8 @@ source "$VENV_PATH"
 
 get_zigpy_ieee_from_device
 enable_zha_for_home_assistant
+
+sync
 
 deactivate
 

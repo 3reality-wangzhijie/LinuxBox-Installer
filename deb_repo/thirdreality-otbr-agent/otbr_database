@@ -144,9 +144,10 @@ class OTBR:
         commands = [
             {"step": "Step1: dataset init new", "args": ["dataset", "init", "new"]},
             {"step": "Step2: dataset", "args": ["dataset"]},
-            {"step": "Step3: dataset commit active", "args": ["dataset", "commit", "active"]},
-            {"step": "Step4: ifconfig up", "args": ["ifconfig", "up"]},
-            {"step": "Step5: thread start", "args": ["thread", "start"]}
+            {"step": "Step3: dataset channel 25", "args": ["dataset", "channel", "25"]},
+            {"step": "Step4: dataset commit active", "args": ["dataset", "commit", "active"]},
+            {"step": "Step5: ifconfig up", "args": ["ifconfig", "up"]},
+            {"step": "Step6: thread start", "args": ["thread", "start"]}
         ]
         
         try:
