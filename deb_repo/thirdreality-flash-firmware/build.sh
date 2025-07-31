@@ -74,7 +74,7 @@ if [ -f "${current_dir}/upgrade_firmware.sh" ]; then
     chmod +x ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
 
     # Check if zigbee firmware exists and modify upgrade_firmware.sh accordingly
-    if [ ! -f "${current_dir}/partition_1m_images/zigbee_whole_img.bin" ]; then
+    if [ ! -f "${current_dir}/partition_1m_images/blz_whole_img.bin" ]; then
         # Comment out zigbee function call if firmware doesn't exist
         sed -i 's/^flash_zigbee$/#flash_zigbee/' ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
     fi
