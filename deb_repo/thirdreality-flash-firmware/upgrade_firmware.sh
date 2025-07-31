@@ -4,6 +4,8 @@
 SRC="/usr/lib/thirdreality/images"
 DST="/lib/firmware/bl706"
 
+echo "Firmware upgrade script starting..."
+
 # Function to flash zigbee firmware with service management
 flash_zigbee() {
     echo "upgrade bl702/706 zigbee firmware ..."
@@ -20,7 +22,9 @@ flash_zigbee() {
         fi
     done
 
-    if [ -f "$SRC/blz_whole_img.bin" ]; then
+    echo "Checking for zigbee firmware at: $SRC/blz_whole_img.bin"
+    if [ -f "$SRC/partition_images/blz_whole_img.bin" ]; then
+        echo "Found zigbee firmware source file"
         # Check if old firmware exists and calculate MD5
         if [ -f "$DST/partition_1m_images/blz_whole_img.bin" ]; then
             old_md5=$(md5sum "$DST/partition_1m_images/blz_whole_img.bin" | cut -d' ' -f1)
@@ -30,7 +34,7 @@ flash_zigbee() {
         fi
         
         # Copy new firmware
-        cp $SRC/blz_whole_img.bin $DST/partition_1m_images/blz_whole_img.bin
+        cp $SRC/partition_images/blz_whole_img.bin $DST/partition_1m_images/blz_whole_img.bin
         
         # Calculate new firmware MD5
         new_md5=$(md5sum "$DST/partition_1m_images/blz_whole_img.bin" | cut -d' ' -f1)
@@ -44,6 +48,8 @@ flash_zigbee() {
                 echo "Zigbee firmware updated (MD5 changed)"
             fi
         fi
+    else
+        echo "Zigbee firmware source file not found: $SRC/partition_images/blz_whole_img.bin"
     fi
     
     # Execute flash command
@@ -71,7 +77,9 @@ flash_thread() {
         was_running=true
     fi
     
-    if [ -f "$SRC/thread_whole_img.bin" ]; then
+    echo "Checking for thread firmware at: $SRC/thread_whole_img.bin"
+    if [ -f "$SRC/partition_images/thread_whole_img.bin" ]; then
+        echo "Found thread firmware source file"
         # Check if old firmware exists and calculate MD5
         if [ -f "$DST/partition_1m_images/thread_whole_img.bin" ]; then
             old_md5=$(md5sum "$DST/partition_1m_images/thread_whole_img.bin" | cut -d' ' -f1)
@@ -81,7 +89,7 @@ flash_thread() {
         fi
         
         # Copy new firmware
-        cp $SRC/thread_whole_img.bin $DST/partition_1m_images/thread_whole_img.bin
+        cp $SRC/partition_images/thread_whole_img.bin $DST/partition_1m_images/thread_whole_img.bin
         
         # Calculate new firmware MD5
         new_md5=$(md5sum "$DST/partition_1m_images/thread_whole_img.bin" | cut -d' ' -f1)
@@ -95,6 +103,8 @@ flash_thread() {
                 echo "Thread firmware updated (MD5 changed)"
             fi
         fi
+    else
+        echo "Thread firmware source file not found: $SRC/partition_images/thread_whole_img.bin"
     fi
     
     # Execute flash command
