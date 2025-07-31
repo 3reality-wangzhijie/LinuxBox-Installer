@@ -49,49 +49,46 @@ mkdir -p "${output_dir}"
 print_info "syncing DEBIAN ..."
 cp ${current_dir}/DEBIAN ${output_dir}/ -R
 
-mkdir -p ${output_dir}/lib/firmware/bl706/partition_1m_images
-mkdir -p ${output_dir}/lib/firmware/bl706/partition_2m_images
+mkdir -p ${output_dir}/usr/lib/thirdreality/images
+mkdir -p ${output_dir}/etc/systemd/system
 
-cp ${current_dir}/partition_1m_images ${output_dir}/lib/firmware/bl706/ -R
-cp ${current_dir}/partition_2m_images ${output_dir}/lib/firmware/bl706/ -R
+cp ${current_dir}/partition_images ${output_dir}/usr/lib/thirdreality/images/ -R
 
 if [ -f "${current_dir}/bflb_iot.tar.gz" ]; then
-    cp ${current_dir}/bflb_iot.tar.gz ${output_dir}/lib/firmware/bl706/
+    cp ${current_dir}/bflb_iot.tar.gz ${output_dir}/usr/lib/thirdreality/images/
 fi
 
 if [ -f "${current_dir}/bl706_func.sh" ]; then
-    cp ${current_dir}/bl706_func.sh ${output_dir}/lib/firmware/bl706/
-    chmod +x ${output_dir}/lib/firmware/bl706/bl706_func.sh
-fi
-
-if [ -f "${current_dir}/bl706_func.sh" ]; then
-    cp ${current_dir}/bl706_func.sh ${output_dir}/lib/firmware/bl706/
-    chmod +x ${output_dir}/lib/firmware/bl706/bl706_func.sh
+    cp ${current_dir}/bl706_func.sh ${output_dir}/usr/lib/thirdreality/images/
+    chmod +x ${output_dir}/usr/lib/thirdreality/images/bl706_func.sh
 fi
 
 if [ -f "${current_dir}/upgrade_firmware.sh" ]; then
-    cp ${current_dir}/upgrade_firmware.sh ${output_dir}/lib/firmware/bl706/
-    chmod +x ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+    cp ${current_dir}/upgrade_firmware.sh ${output_dir}/usr/lib/thirdreality/images/
+    chmod +x ${output_dir}/usr/lib/thirdreality/images/upgrade_firmware.sh
 
     # Check if zigbee firmware exists and modify upgrade_firmware.sh accordingly
-    if [ ! -f "${current_dir}/partition_1m_images/blz_whole_img.bin" ]; then
+    if [ ! -f "${current_dir}/partition_images/blz_whole_img.bin" ]; then
         # Comment out zigbee function call if firmware doesn't exist
-        sed -i 's/^flash_zigbee$/#flash_zigbee/' ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+        sed -i 's/^flash_zigbee$/#flash_zigbee/' ${output_dir}/usr/lib/thirdreality/images/upgrade_firmware.sh
     fi
 
     # Check if thread firmware exists and modify upgrade_firmware.sh accordingly
-    if [ ! -f "${current_dir}/partition_1m_images/thread_whole_img.bin" ]; then
+    if [ ! -f "${current_dir}/partition_images/thread_whole_img.bin" ]; then
         # Comment out thread function call if firmware doesn't exist
-        sed -i 's/^flash_thread$/#flash_thread/' ${output_dir}/lib/firmware/bl706/upgrade_firmware.sh
+        sed -i 's/^flash_thread$/#flash_thread/' ${output_dir}/usr/lib/thirdreality/images/upgrade_firmware.sh
     fi
 
+fi
+
+# Copy systemd service file
+if [ -f "${current_dir}/thirdreality-firmware-upgrade.service" ]; then
+    cp ${current_dir}/thirdreality-firmware-upgrade.service ${output_dir}/etc/systemd/system/
 fi
 
 print_info "Start to build flash_firmware_${version}.deb ..."
 dpkg-deb --build ${output_dir} ${current_dir}/flash_firmware_${version}.deb
 
-
-rm -rf ${output_dir}/usr/
 
 print_info "Build flash_firmware_${version}.deb finished ..."
 

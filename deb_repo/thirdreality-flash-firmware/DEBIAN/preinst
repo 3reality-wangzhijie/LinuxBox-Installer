@@ -1,0 +1,5 @@
+#!/bin/bash
+if [[ -d "/usr/lib/thirdreality/images" ]]; then
+    echo "remove bl702 image data of last version ..."
+    rm -rf /usr/lib/thirdreality/images/*
+fi
