@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+corepack enable
+
+yes Y | pnpm -C /opt/openhab-deps/zigbee-herdsman install
+yes Y | pnpm -C /opt/openhab-deps/zigbee2mqtt install
+
+# fix problem due to architecture difference between target and host
+yes Y | pnpm -C /opt/openhab-deps/zigbee2mqtt remove unix-dgram
+yes Y | pnpm -C /opt/openhab-deps/zigbee2mqtt install unix-dgram
+
+systemctl enable zigbee2mqtt.service
